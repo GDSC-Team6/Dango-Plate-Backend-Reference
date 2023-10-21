@@ -8,6 +8,7 @@ public class DangoApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(DangoApplication.class, args);
+        //main 브랜치로 변경
     }
 
 }
