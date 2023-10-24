@@ -9,7 +9,6 @@ env:
   GCE_INSTANCE: 'dango-plate'
   GCE_INSTANCE_ZONE: 'asia-northeast3-a'
   PROJECT_NAME: 'Dango-Plate-Backend-Reference'
-  BRANCH: 'main'
 
 jobs:
   deploy:
@@ -27,10 +26,10 @@ jobs:
           script: |
             cd /home/minskim3/${{ env.PROJECT_NAME }}
 
-            git checkout ${{ env.BRANCH }}
+            git checkout main
             git fetch --all
-            git reset --hard origin/${{ env.BRANCH }}
-            git pull origin ${{ env.BRANCH }}
+            git reset --hard origin/main
+            git pull origin main
 
             if [ "$(docker ps -aq -f name=spring)" ]
             then
