@@ -40,7 +40,6 @@ public class TokenProvider implements InitializingBean {
     private final CustomUserDetailsService customUserDetailsService;
     private final long accessTime;
     private final long refreshTime;
-
     private Key key;
 
 
@@ -59,7 +58,6 @@ public class TokenProvider implements InitializingBean {
         this.accessTime = accessTime*1000;
         this.refreshTime = refreshTime*1000;
     }
-
 
 
     @Override
@@ -137,8 +135,6 @@ public class TokenProvider implements InitializingBean {
         String userName = user.getUsername();
 
         UserDetails userDetails = customUserDetailsService.loadUserByUsername(userName);
-
-        //User principal = new User(claims.getSubject(), "", authorities);
 
         return new UsernamePasswordAuthenticationToken(userDetails, token, userDetails.getAuthorities());
     }

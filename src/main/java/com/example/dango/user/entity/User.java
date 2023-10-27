@@ -8,6 +8,7 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -56,13 +57,16 @@ public class User extends BaseEntity {
 
     //TODO dto로 수정하기 나중에
     public static User toSocialLoginUser(String email, String social, String name) {
+        Authority authority = Authority.builder()
+                .authorityName("ROLE_USER")
+                .build();
 
         User user = User.builder()
                 .username(email)
                 .name(name)
                 .password("")  //소셜로그인은 비밀번호x
                 .imageUrl("이미지url")
-                //.userRole("ROLE_USER")
+                .authorities(Collections.singletonList(authority))
                 .social(social)
                 .build();
 

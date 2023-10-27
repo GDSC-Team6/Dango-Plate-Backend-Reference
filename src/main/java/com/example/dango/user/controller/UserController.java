@@ -41,7 +41,6 @@ public class UserController {
         if(signupUserDto.getPassword().length() < 6)
             throw new BadRequestException("비밀번호를 6자리 이상 입력해주세요");
 
-
         return new ApiResponse<>(userService.signup(signupUserDto));
     }
 
@@ -54,7 +53,7 @@ public class UserController {
 
 
     @ApiOperation(value = "회원 정보 수정", notes = "회원 정보 수정")
-    @PatchMapping("/edit")
+    @PatchMapping("")
     public ApiResponse<String> signup(@RequestBody UserReq.UserInfoEditReq userInfoEditReq) {
         userService.userInfoEdit(userInfoEditReq);
         return new ApiResponse<>("회원 정보 수정이 완료되었습니다");
