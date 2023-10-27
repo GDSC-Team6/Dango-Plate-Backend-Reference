@@ -7,6 +7,7 @@ import com.example.dango.user.entity.User;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -19,9 +20,12 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
+import java.nio.charset.StandardCharsets;
 import java.security.Key;
+import java.util.Base64;
 import java.util.Date;
 
 import static com.example.dango.global.jwt.JwtFilter.AUTHORIZATION_HEADER;
@@ -29,22 +33,23 @@ import static java.util.Objects.isNull;
 
 
 @Component
-public class TokenProvider implements InitializingBean {
+//@RequiredArgsConstructor
+public class TokenProvider implements InitializingBean{//implements InitializingBean
 
     private final Logger logger = LoggerFactory.getLogger(TokenProvider.class);
 
-    private static final String AUTHORITIES_KEY = "auth";
-
-    private final String secret;
-
+    //private static final String AUTHORITIES_KEY = "auth";
+    //@Value("${jwt.secret}")
+    private String secret;
+    //@Value("${jwt.refresh}")
+    private String refreshSecret;
     private final UserRepository userRepository;
-    private final String refreshSecret;
-    //private final CustomUserDetailsService customUserDetailsService;
-
     private final UserDetailsService userDetailsService;
+    //@Value("${jwt.access-token-seconds}")
     private final long accessTime;
-    private final long refreshTime;
 
+    //@Value("${jwt.refresh-token-seconds}")
+    private final long refreshTime;
     private Key key;
 
 
@@ -64,14 +69,17 @@ public class TokenProvider implements InitializingBean {
         this.refreshTime = refreshTime*1000;
     }
 
-
-
     @Override
     public void afterPropertiesSet() {
-        byte[] keyBytes = Decoders.BASE64.decode(secret);
-        this.key = Keys.hmacShaKeyFor(keyBytes);
+        //byte[] keyBytes = Decoders.BASE64.decode(secret);
+        this.key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     }
 
+//    @PostConstruct
+//    public void init() {
+//        secret = Base64.getEncoder().encodeToString(secret.getBytes(StandardCharsets.UTF_8));
+//        refreshSecret = Base64.getEncoder().encodeToString(refreshSecret.getBytes(StandardCharsets.UTF_8));
+//    }
 
     public String createToken(Long userId) {
 
@@ -137,7 +145,7 @@ public class TokenProvider implements InitializingBean {
     public Authentication getAuthentication(String token) {
         Claims claims = Jwts
             .parserBuilder()
-            .setSigningKey(key)
+            .setSigningKey(secret)
             .build()
             .parseClaimsJws(token)
             .getBody();
@@ -154,17 +162,6 @@ public class TokenProvider implements InitializingBean {
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 
-//    public String getUsername(String token) {
-//        String username;
-//        try {
-//            username = Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody().getSubject();
-//        }
-//        catch(ExpiredJwtException e) {
-//            username = e.getClaims().getSubject();
-//            return username;
-//        }
-//        return username;
-//    }
 
 
     public String getJwt(){

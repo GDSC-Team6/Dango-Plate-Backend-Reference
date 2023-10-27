@@ -65,7 +65,7 @@ public class UserService {
                 .name(signupUserDto.getName())
                 .phone(signupUserDto.getPhone())
                 .imageUrl(signupUserDto.getImageUrl())
-                .birth(signupUserDto.getBirth())
+                //.birth(signupUserDto.getBirth())
                 .userRole("ROLE_USER")
                 .build();
 
