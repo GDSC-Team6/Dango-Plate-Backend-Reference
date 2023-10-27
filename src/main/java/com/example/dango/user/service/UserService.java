@@ -38,8 +38,6 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final TokenProvider tokenProvider;
 
-    private final CustomUserDetailsService customUserDetailsService;
-
 
 
     @SneakyThrows
