@@ -39,7 +39,6 @@ public class UserRes {
                     .phone(user.getPhone())
                     .imageUrl(user.getImageUrl())
                     .social(user.getSocial())
-                    .firstLogin(user.isFirstLogin())
                     .build();
         }
     }

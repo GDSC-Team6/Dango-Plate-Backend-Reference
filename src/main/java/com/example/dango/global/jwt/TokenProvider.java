@@ -123,7 +123,7 @@ public class TokenProvider implements InitializingBean {
         Long userId = claims.get("userId",Long.class);
 
 
-        User user = userRepository.findUserByUserId(userId).get();
+        User user = userRepository.findUserById(userId).get();
         String userName = user.getUsername();
 
         UserDetails userDetails = customUserDetailsService.loadUserByUsername(userName);

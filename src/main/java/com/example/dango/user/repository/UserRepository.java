@@ -2,7 +2,6 @@ package com.example.dango.user.repository;
 
 import com.example.dango.user.entity.User;
 
-import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -15,7 +14,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findUserByUsername(String email);
 
 
-    Optional<User> findUserByUserId(Long userId);
+    Optional<User> findUserById(Long userId);
 
 
     User findByUsernameAndSocial(String username, String social);
