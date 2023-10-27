@@ -1,13 +1,11 @@
 package com.example.dango.global.config;
 
 
-import com.example.dango.global.jwt.JwtAccessDeniedHandler;
-import com.example.dango.global.jwt.JwtAuthenticationEntryPoint;
-import com.example.dango.global.jwt.JwtSecurityConfig;
-import com.example.dango.global.jwt.TokenProvider;
+import com.example.dango.global.jwt.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -16,6 +14,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 @RequiredArgsConstructor
@@ -36,6 +35,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+
+    @Bean
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
     }
 
     @Override
@@ -80,7 +86,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 
                 .and()
-                .apply(new JwtSecurityConfig(tokenProvider))
+                //.apply(new JwtSecurityConfig(tokenProvider))
+                .addFilterBefore(new JwtFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class)
 
         ;
     }

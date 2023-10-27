@@ -15,6 +15,8 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
+import static java.util.Objects.isNull;
+
 @Slf4j
 public class JwtFilter extends GenericFilterBean {
 
@@ -31,27 +33,40 @@ public class JwtFilter extends GenericFilterBean {
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
             throws IOException, ServletException {
-        HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
-        String jwt = resolveToken(httpServletRequest);
-        log.info("jwt : "+ jwt);
-        String requestURI = httpServletRequest.getRequestURI();
+        String token = tokenProvider.resolveToken((HttpServletRequest) servletRequest);
 
-        if (StringUtils.hasText(jwt) && tokenProvider.validateToken(servletRequest, jwt)) {
-            Authentication authentication = tokenProvider.getAuthentication(jwt);
+        if(!isNull(token) && tokenProvider.validateToken(token)) {
+            Authentication authentication = tokenProvider.getAuthentication(token);
             SecurityContextHolder.getContext().setAuthentication(authentication);
-            logger.debug("Security Context에 '{}' 인증 정보를 저장했습니다, uri: {}", authentication.getName(), requestURI);
-        } else {
-            logger.debug("유효한 JWT 토큰이 없습니다, uri: {}", requestURI);
+            servletRequest.setAttribute("id", Long.valueOf(tokenProvider.getUserId()));
         }
-
         filterChain.doFilter(servletRequest, servletResponse);
     }
 
-    private String resolveToken(HttpServletRequest request) {
-        String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7);
-        }
-        return null;
-    }
+//    @Override
+//    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
+//            throws IOException, ServletException {
+//        HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
+//        String jwt = resolveToken(httpServletRequest);
+//        log.info("jwt : "+ jwt);
+//        String requestURI = httpServletRequest.getRequestURI();
+//
+//        if (StringUtils.hasText(jwt) && tokenProvider.validateToken(servletRequest, jwt)) {
+//            Authentication authentication = tokenProvider.getAuthentication(jwt);
+//            SecurityContextHolder.getContext().setAuthentication(authentication);
+//            logger.debug("Security Context에 '{}' 인증 정보를 저장했습니다, uri: {}", authentication.getName(), requestURI);
+//        } else {
+//            logger.debug("유효한 JWT 토큰이 없습니다, uri: {}", requestURI);
+//        }
+//
+//        filterChain.doFilter(servletRequest, servletResponse);
+//    }
+//
+//    private String resolveToken(HttpServletRequest request) {
+//        String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
+//        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
+//            return bearerToken.substring(7);
+//        }
+//        return null;
+//    }
 }

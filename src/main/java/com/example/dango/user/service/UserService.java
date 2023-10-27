@@ -66,7 +66,7 @@ public class UserService {
                 .phone(signupUserDto.getPhone())
                 .imageUrl(signupUserDto.getImageUrl())
                 .birth(signupUserDto.getBirth())
-                .role(Role.ROLE_USER)
+                .userRole("ROLE_USER")
                 .build();
 
         userRepository.save(user);

@@ -3,7 +3,7 @@ package com.example.dango.global.jwt;
 import com.example.dango.user.repository.UserRepository;
 import com.example.dango.user.dto.GenerateToken;
 import com.example.dango.user.entity.User;
-import com.example.dango.user.service.CustomUserDetailsService;
+
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -24,6 +25,7 @@ import java.security.Key;
 import java.util.Date;
 
 import static com.example.dango.global.jwt.JwtFilter.AUTHORIZATION_HEADER;
+import static java.util.Objects.isNull;
 
 
 @Component
@@ -37,7 +39,9 @@ public class TokenProvider implements InitializingBean {
 
     private final UserRepository userRepository;
     private final String refreshSecret;
-    private final CustomUserDetailsService customUserDetailsService;
+    //private final CustomUserDetailsService customUserDetailsService;
+
+    private final UserDetailsService userDetailsService;
     private final long accessTime;
     private final long refreshTime;
 
@@ -48,14 +52,14 @@ public class TokenProvider implements InitializingBean {
             @Value("${jwt.secret}") String secret,
             @Value("${jwt.refresh}") String refreshSecret,
             UserRepository userRepository,
-            CustomUserDetailsService customUserDetailsService,
+            UserDetailsService userDetailsService,
             @Value("${jwt.access-token-seconds}") long accessTime,
             @Value("${jwt.refresh-token-seconds}")long refreshTime) {
 
         this.secret = secret;
         this.userRepository = userRepository;
         this.refreshSecret=refreshSecret;
-        this.customUserDetailsService=customUserDetailsService;
+        this.userDetailsService=userDetailsService;
         this.accessTime = accessTime*1000;
         this.refreshTime = refreshTime*1000;
     }
@@ -104,34 +108,63 @@ public class TokenProvider implements InitializingBean {
         String accessToken = createToken(userId);
         String refreshToken = createRefreshToken(userId);
 
-//        //redis에 리프레시토큰 저장
-//        redisService.saveToken(String.valueOf(userId),refreshToken, (System.currentTimeMillis()+ refreshTime*1000));
-
         return new GenerateToken(accessToken,refreshToken);
     }
 
 
+//    public Authentication getAuthentication(String token) {
+//        Claims claims = Jwts
+//                .parserBuilder()
+//                .setSigningKey(key)
+//                .build()
+//                .parseClaimsJws(token)
+//                .getBody();
+//
+//
+//        Long userId = claims.get("userId",Long.class);
+//
+//
+//        User user = userRepository.findUserById(userId).get();
+//        String userName = user.getUsername();
+//
+//        UserDetails userDetails = customUserDetailsService.loadUserByUsername(userName);
+//
+//        //User principal = new User(claims.getSubject(), "", authorities);
+//
+//        return new UsernamePasswordAuthenticationToken(userDetails, token, userDetails.getAuthorities());
+//    }
+
     public Authentication getAuthentication(String token) {
         Claims claims = Jwts
-                .parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
-
+            .parserBuilder()
+            .setSigningKey(key)
+            .build()
+            .parseClaimsJws(token)
+            .getBody();
 
         Long userId = claims.get("userId",Long.class);
-
-
         User user = userRepository.findUserById(userId).get();
-        String userName = user.getUsername();
+        String username = user.getUsername();
 
-        UserDetails userDetails = customUserDetailsService.loadUserByUsername(userName);
 
-        //User principal = new User(claims.getSubject(), "", authorities);
-
-        return new UsernamePasswordAuthenticationToken(userDetails, token, userDetails.getAuthorities());
+        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+        if(isNull(userDetails)) {
+            return null;
+        }
+        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
+
+//    public String getUsername(String token) {
+//        String username;
+//        try {
+//            username = Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody().getSubject();
+//        }
+//        catch(ExpiredJwtException e) {
+//            username = e.getClaims().getSubject();
+//            return username;
+//        }
+//        return username;
+//    }
 
 
     public String getJwt(){
@@ -139,7 +172,12 @@ public class TokenProvider implements InitializingBean {
         return request.getHeader(AUTHORIZATION_HEADER);
     }
 
-    public Long getUserIdx() {
+    public String resolveToken(HttpServletRequest httpServletRequest) {
+        return httpServletRequest.getHeader(AUTHORIZATION_HEADER);
+    }
+
+
+    public Long getUserId() {
         String accessToken = getJwt();
 
         Jws<Claims> claims;
@@ -148,16 +186,14 @@ public class TokenProvider implements InitializingBean {
                 .parseClaimsJws(accessToken);
         //String expiredAt= redisService.getValues(accessToken);
 
-        Long userIdx = claims.getBody().get("userIdx",Long.class);
+        Long userId = claims.getBody().get("userId",Long.class);
 
-
-
-        return userIdx;
+        return userId;
     }
 
 
 
-    public boolean validateToken(ServletRequest servletRequest, String token) {
+    public boolean validateToken(String token) {
         try {
             //Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
 
@@ -165,7 +201,7 @@ public class TokenProvider implements InitializingBean {
             claims = Jwts.parser()
                     .setSigningKey(secret)
                     .parseClaimsJws(token);
-            Long userIdx = claims.getBody().get("userIdx",Long.class);
+            Long userId = claims.getBody().get("userId",Long.class);
 
 
             return true;

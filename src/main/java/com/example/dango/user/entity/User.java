@@ -41,10 +41,9 @@ public class User extends BaseEntity {
 
     private String social;
 
-    @Column(name = "role")
-    @Enumerated(value = EnumType.STRING)
-    private Role role;
-
+    @Column(name = "user_role")
+    //@Enumerated(value = EnumType.STRING)
+    private String userRole;
 
 
     //TODO dto로 수정하기 나중에
@@ -55,7 +54,7 @@ public class User extends BaseEntity {
                 .name(name)
                 .password("")  //소셜로그인은 비밀번호x
                 .imageUrl("이미지url")
-                .role(Role.ROLE_USER)
+                .userRole("ROLE_USER")
                 .social(social)
                 .build();
 
