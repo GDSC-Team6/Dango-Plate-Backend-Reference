@@ -26,8 +26,6 @@ public class AuthService {
     private final UserRepository userRepository;
     private final TokenProvider tokenProvider;
     private final UserService userService;
-    @Value("${jwt.refresh-token-seconds}")
-    private long refreshTime;
 
 
     public String getKakaoAccessToken(String code) {
@@ -47,7 +45,7 @@ public class AuthService {
             BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(conn.getOutputStream()));
             StringBuilder sb = new StringBuilder();
             sb.append("grant_type=authorization_code");
-            sb.append("&client_id=abf4119e38a436ab64718033228aad2d");
+            sb.append("&client_id=e0b9b82b8126cbdf0c5758786b518f66");
             sb.append("&redirect_uri=http://localhost:8080/oauth/kakao");
             sb.append("&code=" + code);
             bw.write(sb.toString());
