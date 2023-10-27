@@ -4,7 +4,7 @@ package com.example.dango.user.service;
 import com.example.dango.global.exception.BadRequestException;
 import com.example.dango.global.exception.ServerErrorException;
 import com.example.dango.global.jwt.TokenProvider;
-import com.example.dango.user.entity.Role;
+import com.example.dango.user.entity.Authority;
 import com.example.dango.user.repository.UserRepository;
 import com.example.dango.user.dto.GenerateToken;
 import com.example.dango.user.dto.TokenRes;
@@ -59,14 +59,17 @@ public class UserService {
             throw new BadRequestException("이미 가입되어 있는 유저입니다.");
         }
 
+        Authority authority = Authority.builder()
+                .authorityName("ROLE_USER")
+                .build();
+
         User user = User.builder()
                 .username(signupUserDto.getUsername())
                 .password(passwordEncoder.encode(signupUserDto.getPassword()))
                 .name(signupUserDto.getName())
                 .phone(signupUserDto.getPhone())
                 .imageUrl(signupUserDto.getImageUrl())
-                //.birth(signupUserDto.getBirth())
-                .userRole("ROLE_USER")
+                .authorities(Collections.singletonList(authority))
                 .build();
 
         userRepository.save(user);
