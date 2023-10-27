@@ -134,7 +134,6 @@ public class AuthService {
             //카카오 계정의 이메일과 현재 일반 회원가입한 이메일 중에서 같은 것이 없다면 카카오 계정의 이메일로 회원가입
             if(!userRepository.existsByUsernameAndSocial(String.valueOf(email),"kakao")){
                 User user = User.toSocialLoginUser(String.valueOf(email),"kakao", name);
-
                 userRepository.save(user);
             }
             br.close();
