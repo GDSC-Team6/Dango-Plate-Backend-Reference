@@ -7,6 +7,7 @@ spring:
 #    url: ${db.url}
 #    username: ${db.username}
 #    password: ${db.password}
+
   h2:
     console:
       enabled: true

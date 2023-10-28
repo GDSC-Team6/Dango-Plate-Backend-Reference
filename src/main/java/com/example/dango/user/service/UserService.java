@@ -95,9 +95,6 @@ public class UserService {
         if (userInfoEditReq.getName() != null){
             user.setName(userInfoEditReq.getName());
         }
-        if (userInfoEditReq.getBirth() != null){
-            user.setBirth(userInfoEditReq.getBirth());
-        }
         if (userInfoEditReq.getPhone() != null){
             user.setPhone(userInfoEditReq.getPhone());
         }
