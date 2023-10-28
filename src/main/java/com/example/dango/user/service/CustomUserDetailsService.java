@@ -1,8 +1,8 @@
 package com.example.dango.user.service;
 
 
-import com.example.dango.user.repository.UserRepository;
 import com.example.dango.user.entity.User;
+import com.example.dango.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -32,10 +32,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     private org.springframework.security.core.userdetails.User createUser(String username, User user) {
-//        if (!user.getStatus().equals(1)) {
-//            //throw new RuntimeException(username + " -> 활성화되어 있지 않습니다.");
-//            throw new RuntimeException(username + " -> 탈퇴하거나 가입되지 않은 회원입니다");
-//        }
+
         List<GrantedAuthority> grantedAuthorities = user.getAuthorities().stream()
                 .map(authority -> new SimpleGrantedAuthority(authority.getAuthorityName()))
                 .collect(Collectors.toList());

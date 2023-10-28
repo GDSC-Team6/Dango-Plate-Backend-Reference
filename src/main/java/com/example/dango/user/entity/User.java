@@ -19,15 +19,15 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "user")
+@Table(name = "`user`")
 @Entity
 public class User extends BaseEntity {
 
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id")
-    private Long userId;
+    @Column(name = "id")
+    private Long id;
 
     private String username; //로그인할 때 사용하는 아이디(이메일)
 
@@ -44,23 +44,16 @@ public class User extends BaseEntity {
 
     private String social;
 
-    @Column(name = "first_login")
-    private boolean firstLogin;
-
-
-
 
     @JsonIgnore
     @ManyToMany
     @JoinTable(
             name = "user_authority",
-            joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "user_id")},
+            joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "authority_name", referencedColumnName = "authority_name")})
     private List<Authority> authorities;
 
 
-
-    //TODO dto로 수정하기 나중에
     public static User toSocialLoginUser(String email, String social, String name) {
         Authority authority = Authority.builder()
                 .authorityName("ROLE_USER")

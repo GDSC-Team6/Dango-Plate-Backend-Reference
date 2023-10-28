@@ -26,9 +26,7 @@ public class AuthService {
     private final UserRepository userRepository;
     private final TokenProvider tokenProvider;
     private final UserService userService;
-    @Value("${jwt.refresh-token-seconds}")
-    private long refreshTime;
-    //private final RedisService redisService;
+
 
     public String getKakaoAccessToken(String code) {
         String access_Token="";
@@ -47,7 +45,7 @@ public class AuthService {
             BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(conn.getOutputStream()));
             StringBuilder sb = new StringBuilder();
             sb.append("grant_type=authorization_code");
-            sb.append("&client_id=abf4119e38a436ab64718033228aad2d");
+            sb.append("&client_id=e0b9b82b8126cbdf0c5758786b518f66");
             sb.append("&redirect_uri=http://localhost:8080/oauth/kakao");
             sb.append("&code=" + code);
             bw.write(sb.toString());
@@ -89,7 +87,7 @@ public class AuthService {
     }
 
     @Transactional(rollbackFor=SQLException.class)
-    public TokenRes createAndLoginKakaoUser(UserReq.SocialReq socialReq)  {
+    public TokenRes createAndLoginKakaoUser(String accessTokenFromSocial)  {
 
         String reqURL = "https://kapi.kakao.com/v2/user/me";
 
@@ -100,7 +98,7 @@ public class AuthService {
 
             conn.setRequestMethod("POST");
             conn.setDoOutput(true);
-            conn.setRequestProperty("Authorization", "Bearer " + socialReq.getAccessTokenFromSocial()); //전송할 header 작성, access_token전송
+            conn.setRequestProperty("Authorization", "Bearer " + accessTokenFromSocial); //전송할 header 작성, access_token전송
 
             //결과 코드가 200이라면 성공
             int responseCode = conn.getResponseCode();
@@ -118,7 +116,6 @@ public class AuthService {
 
 
             //카카오에서 받은 정보 파싱
-            //Gson 라이브러리로 JSON파싱
             JsonParser parser = new JsonParser();
             JsonElement element = parser.parse(result);
 
@@ -135,30 +132,21 @@ public class AuthService {
 
 
             //카카오 계정의 이메일과 현재 일반 회원가입한 이메일 중에서 같은 것이 없다면 카카오 계정의 이메일로 회원가입
-            if(!userRepository.existsByUsernameAndSocial(String.valueOf(email),socialReq.getSocial())){
-                User user = User.toSocialLoginUser(String.valueOf(email),socialReq.getSocial(),name);
-
+            if(!userRepository.existsByUsernameAndSocial(String.valueOf(email),"kakao")){
+                User user = User.toSocialLoginUser(String.valueOf(email),"kakao", name);
                 userRepository.save(user);
             }
             br.close();
 
             //로그인
-            User user = userRepository.findByUsernameAndSocial(String.valueOf(email),socialReq.getSocial());
-            Long userId = user.getUserId();
-
-            GenerateToken generateToken = tokenProvider.createAllToken(userId);
-
-            boolean isFirstLogin = user.isFirstLogin();
-            user.setFirstLogin(false); //첫 로그인 이후는 전부 0으로 바꾸기
+            User user = userRepository.findByUsernameAndSocial(String.valueOf(email),"kakao");
+            GenerateToken generateToken = tokenProvider.createAllToken(user.getId());
 
             return TokenRes.builder()
                     .username(user.getUsername())
-                    .firstLogin(isFirstLogin)
                     .accessToken(generateToken.getAccessToken())
                     .refreshToken(generateToken.getRefreshToken())
                     .build();
-
-
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -1,8 +1,8 @@
 package com.example.dango.global.jwt;
 
-import com.example.dango.user.repository.UserRepository;
 import com.example.dango.user.dto.GenerateToken;
 import com.example.dango.user.entity.User;
+import com.example.dango.user.repository.UserRepository;
 import com.example.dango.user.service.CustomUserDetailsService;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
@@ -34,13 +34,12 @@ public class TokenProvider implements InitializingBean {
     private static final String AUTHORITIES_KEY = "auth";
 
     private final String secret;
-
+//    private final long tokenValidityInMilliseconds;
     private final UserRepository userRepository;
     private final String refreshSecret;
     private final CustomUserDetailsService customUserDetailsService;
     private final long accessTime;
     private final long refreshTime;
-
     private Key key;
 
 
@@ -61,13 +60,11 @@ public class TokenProvider implements InitializingBean {
     }
 
 
-
     @Override
     public void afterPropertiesSet() {
         byte[] keyBytes = Decoders.BASE64.decode(secret);
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
-
 
     public String createToken(Long userId) {
 
@@ -101,11 +98,8 @@ public class TokenProvider implements InitializingBean {
 
 
     public GenerateToken createAllToken(Long userId){
-        String accessToken = createToken(userId);
-        String refreshToken = createRefreshToken(userId);
-
-//        //redis에 리프레시토큰 저장
-//        redisService.saveToken(String.valueOf(userId),refreshToken, (System.currentTimeMillis()+ refreshTime*1000));
+        String accessToken=createToken(userId);
+        String refreshToken=createRefreshToken(userId);
 
         return new GenerateToken(accessToken,refreshToken);
     }
@@ -119,16 +113,12 @@ public class TokenProvider implements InitializingBean {
                 .parseClaimsJws(token)
                 .getBody();
 
-
         Long userId = claims.get("userId",Long.class);
 
-
-        User user = userRepository.findUserByUserId(userId).get();
+        User user = userRepository.findUserById(userId).get();
         String userName = user.getUsername();
 
         UserDetails userDetails = customUserDetailsService.loadUserByUsername(userName);
-
-        //User principal = new User(claims.getSubject(), "", authorities);
 
         return new UsernamePasswordAuthenticationToken(userDetails, token, userDetails.getAuthorities());
     }
@@ -139,7 +129,7 @@ public class TokenProvider implements InitializingBean {
         return request.getHeader(AUTHORIZATION_HEADER);
     }
 
-    public Long getUserIdx() {
+    public Long getUserId() {
         String accessToken = getJwt();
 
         Jws<Claims> claims;
@@ -148,11 +138,9 @@ public class TokenProvider implements InitializingBean {
                 .parseClaimsJws(accessToken);
         //String expiredAt= redisService.getValues(accessToken);
 
-        Long userIdx = claims.getBody().get("userIdx",Long.class);
+        Long userId = claims.getBody().get("userId",Long.class);
 
-
-
-        return userIdx;
+        return userId;
     }
 
 
@@ -165,7 +153,7 @@ public class TokenProvider implements InitializingBean {
             claims = Jwts.parser()
                     .setSigningKey(secret)
                     .parseClaimsJws(token);
-            Long userIdx = claims.getBody().get("userIdx",Long.class);
+            Long userId = claims.getBody().get("userId",Long.class);
 
 
             return true;
@@ -181,14 +169,14 @@ public class TokenProvider implements InitializingBean {
         return false;
     }
 
-
-    public void logOut(Long userId, String accessToken) {
-        long expiredAccessTokenTime=getExpiredTime(accessToken).getTime() - new Date().getTime();
-        //Redis 에 액세스 토큰값을 key 로 가지는 userId 값 저장
-        //redisService.saveToken(accessToken,String.valueOf(userId),expiredAccessTokenTime);
-        //Redis 에 저장된 refreshToken 삭제
-        //redisService.deleteValues(String.valueOf(userId));
-    }
+//
+//    public void logOut(Long userId, String accessToken) {
+//        long expiredAccessTokenTime=getExpiredTime(accessToken).getTime() - new Date().getTime();
+//        //Redis 에 액세스 토큰값을 key 로 가지는 userId 값 저장
+//        redisService.saveToken(accessToken,String.valueOf(userId),expiredAccessTokenTime);
+//        //Redis 에 저장된 refreshToken 삭제
+//        redisService.deleteValues(String.valueOf(userId));
+//    }
     public Date getExpiredTime(String token){
         //받은 토큰의 유효 시간을 받아오기
         return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody().getExpiration();

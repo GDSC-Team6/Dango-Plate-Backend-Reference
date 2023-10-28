@@ -12,17 +12,18 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
-
     @EntityGraph(attributePaths = "authorities")
     Optional<User> findUserWithAuthoritiesByUsername(String email);
 
     Optional<User> findUserByUsername(String email);
 
 
-    Optional<User> findUserByUserId(Long userId);
+    Optional<User> findUserById(Long userId);
 
 
     User findByUsernameAndSocial(String username, String social);
 
     boolean existsByUsernameAndSocial(String username, String social);
+
+    boolean existsByUsername(String username);
 }
