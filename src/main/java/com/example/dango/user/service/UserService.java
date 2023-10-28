@@ -4,12 +4,12 @@ package com.example.dango.user.service;
 import com.example.dango.global.exception.BadRequestException;
 import com.example.dango.global.exception.ServerErrorException;
 import com.example.dango.global.jwt.TokenProvider;
+import com.example.dango.user.entity.Authority;
 import com.example.dango.user.repository.UserRepository;
 import com.example.dango.user.dto.GenerateToken;
 import com.example.dango.user.dto.TokenRes;
 import com.example.dango.user.dto.UserReq;
 import com.example.dango.user.dto.UserRes;
-import com.example.dango.user.entity.Authority;
 import com.example.dango.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -38,8 +38,6 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final TokenProvider tokenProvider;
 
-    private final CustomUserDetailsService customUserDetailsService;
-
 
 
     @SneakyThrows
@@ -54,32 +52,10 @@ public class UserService {
         return userRepository.findUserByUsername(username).get();
     }
 
-    public List<Authority> giveUSER(){
-        Authority roleUser = new Authority("ROLE_USER");
-
-        List<Authority> authorityList = new ArrayList<>();
-        authorityList.add(roleUser);
-
-        return authorityList;
-    }
-
-    public List<Authority> giveADMIN(){
-        Authority roleAdmin = new Authority("ROLE_ADMIN");
-        Authority roleUser = new Authority("ROLE_USER");
-
-
-        List<Authority> authorityList = new ArrayList<>();
-        authorityList.add(roleAdmin);
-        authorityList.add(roleUser);
-
-        return authorityList;
-    }
-
-
 
     @Transactional
     public UserRes.UserDetailDto signup(UserReq.SignupUserDto signupUserDto) {
-        if (userRepository.findUserWithAuthoritiesByUsername(signupUserDto.getUsername()).orElse(null) != null) {
+        if (userRepository.existsByUsername(signupUserDto.getUsername())) {
             throw new BadRequestException("이미 가입되어 있는 유저입니다.");
         }
 
@@ -93,7 +69,6 @@ public class UserService {
                 .name(signupUserDto.getName())
                 .phone(signupUserDto.getPhone())
                 .imageUrl(signupUserDto.getImageUrl())
-                .birth(signupUserDto.getBirth())
                 .authorities(Collections.singletonList(authority))
                 .build();
 
@@ -120,9 +95,6 @@ public class UserService {
         if (userInfoEditReq.getName() != null){
             user.setName(userInfoEditReq.getName());
         }
-        if (userInfoEditReq.getBirth() != null){
-            user.setBirth(userInfoEditReq.getBirth());
-        }
         if (userInfoEditReq.getPhone() != null){
             user.setPhone(userInfoEditReq.getPhone());
         }
@@ -146,23 +118,12 @@ public class UserService {
                 SecurityContextHolder.getContext().setAuthentication(authentication); //SecurityContext에 저장
 
 
-
                 User loginUser = optionalUser.get();
-                Long userId = loginUser.getUserId();
+                Long userId = loginUser.getId();
                 GenerateToken generateToken = tokenProvider.createAllToken(userId);
-
-                boolean isFirstLogin = user.isFirstLogin();
-                user.setFirstLogin(false); //첫 로그인 이후는 전부 0으로 바꾸기
-
-
-//                HttpHeaders httpHeaders = new HttpHeaders();
-//                httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + generateToken.getAccessToken());
-//
-
 
                 return TokenRes.builder()
                         .username(loginUser.getUsername())
-                        .firstLogin(isFirstLogin)
                         .accessToken(generateToken.getAccessToken())
                         .refreshToken(generateToken.getRefreshToken())
                         .build();

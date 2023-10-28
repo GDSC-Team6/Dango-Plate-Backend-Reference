@@ -1,6 +1,5 @@
 package com.example.dango.global.config;
 
-
 import com.example.dango.global.jwt.JwtAccessDeniedHandler;
 import com.example.dango.global.jwt.JwtAuthenticationEntryPoint;
 import com.example.dango.global.jwt.JwtSecurityConfig;
@@ -20,8 +19,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 @RequiredArgsConstructor
 @Configuration
-@EnableWebSecurity  //SpringSecurity
+@EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+
 
     private final TokenProvider tokenProvider;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
@@ -66,13 +67,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/swagger-ui/**").permitAll()
                 .antMatchers("/webjars/**").permitAll()
                 .antMatchers("/v3/api-docs").permitAll()
-
-
+                .antMatchers("/h2-console/**").permitAll()
                 .antMatchers("/image/**").permitAll()
                 .antMatchers("/test/**").permitAll()
-                .antMatchers("/user/signup", "/user/login").permitAll()
+                .antMatchers("/user/**").permitAll()
                 .antMatchers("/oauth/**").permitAll()
-                .antMatchers("/data/**").permitAll()
 
 
 

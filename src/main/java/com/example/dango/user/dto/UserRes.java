@@ -3,7 +3,18 @@ package com.example.dango.user.dto;
 import com.example.dango.user.entity.User;
 import lombok.*;
 
+import java.util.List;
+
 public class UserRes {
+
+
+    @Data
+    @Builder
+    public static class RoleDto {
+        private Long id;
+        private String password;
+        private List<String> roles;
+    }
 
 
     @Builder
@@ -39,7 +50,6 @@ public class UserRes {
                     .phone(user.getPhone())
                     .imageUrl(user.getImageUrl())
                     .social(user.getSocial())
-                    .firstLogin(user.isFirstLogin())
                     .build();
         }
     }

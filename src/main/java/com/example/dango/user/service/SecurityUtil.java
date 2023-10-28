@@ -18,13 +18,6 @@ public class SecurityUtil {
 
     public static Optional<String> getCurrentUsername() {
 
-//        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//        UserDetails userDetails = (UserDetails)principal;
-//
-//        String username = userDetails.getUsername();
-//        String password = userDetails.getPassword();
-//        기본적으로 Spring Security의 principal 객체는 Object 형태로 UserDetails를 형변환 해야 한다.
-
         final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null) {

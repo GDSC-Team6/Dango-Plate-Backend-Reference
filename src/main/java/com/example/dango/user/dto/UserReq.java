@@ -42,7 +42,6 @@ public class UserReq {
         private String password;
         private String name;
         private String phone;
-        private String birth;
         private String imageUrl;
     }
     

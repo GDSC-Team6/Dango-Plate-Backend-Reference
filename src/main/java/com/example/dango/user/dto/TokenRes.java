@@ -11,7 +11,6 @@ import lombok.*;
 @Getter
 public class TokenRes {
     private String username;
-    private boolean firstLogin;
     private String accessToken;
     private String refreshToken;
 }
