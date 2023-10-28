@@ -54,8 +54,6 @@ public class User extends BaseEntity {
     private List<Authority> authorities;
 
 
-
-    //TODO dto로 수정하기 나중에
     public static User toSocialLoginUser(String email, String social, String name) {
         Authority authority = Authority.builder()
                 .authorityName("ROLE_USER")

@@ -66,22 +66,6 @@ public class TokenProvider implements InitializingBean {
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
-//    public String createToken(Authentication authentication) {
-//        String authorities = authentication.getAuthorities().stream()
-//                .map(GrantedAuthority::getAuthority)
-//                .collect(Collectors.joining(","));
-//
-//        long now = (new Date()).getTime();
-//        Date validity = new Date(now + this.tokenValidityInMilliseconds);
-//
-//        return Jwts.builder()
-//                .setSubject(authentication.getName())
-//                .claim(AUTHORITIES_KEY, authorities)
-//                .signWith(key, SignatureAlgorithm.HS512)
-//                .setExpiration(validity)
-//                .compact();
-//    }
-
     public String createToken(Long userId) {
 
         long now = (new Date()).getTime();
@@ -155,7 +139,6 @@ public class TokenProvider implements InitializingBean {
         //String expiredAt= redisService.getValues(accessToken);
 
         Long userId = claims.getBody().get("userId",Long.class);
-
 
         return userId;
     }
