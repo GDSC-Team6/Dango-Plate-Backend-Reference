@@ -2,21 +2,22 @@ spring:
   profiles:
     include: real
 
+#  h2:
+#    console:
+#      enabled: true
+#      path: /h2-console
 #  datasource:
-#    driver-class-name: com.mysql.cj.jdbc.Driver
-#    url: ${db.url}
-#    username: ${db.username}
-#    password: ${db.password}
+#    driver-class-name: org.h2.Driver
+#    url: jdbc:h2:mem:testdb
+#    username: sa
+#    password:
 
-  h2:
-    console:
-      enabled: true
-      path: /h2-console
   datasource:
-    driver-class-name: org.h2.Driver
-    url: jdbc:h2:mem:testdb
-    username: sa
-    password:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${{ DATASOURCE_URL }}
+    username: ${{ DATASOURCE_USERNAME }}
+    password: ${{ DATASOURCE_PASSWORD }}
+
 
   jpa:
     hibernate:
