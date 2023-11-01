@@ -23,6 +23,9 @@ jobs:
           key: ${{ secrets.KEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
           port: ${{ secrets.PORT }}
+          spring.datasource.url: ${{ secrets.DATASOURCE_URL }}
+          spring.datasource.username: ${{ secrets.DATASOURCE_USERNAME }}
+          spring.datasource.password: ${{ secrets.DATASOURCE_PASSWORD }}
           script: |
             cd /home/minskim3/${{ env.PROJECT_NAME }}
 
