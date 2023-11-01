@@ -15,6 +15,16 @@ jobs:
     name: Deploy
     runs-on: ubuntu-latest
     steps:
+      - name: Set project from github secret
+        uses: microsoft/variable-substitution@v1
+        with:
+          files: ./src/main/resources/application.yml
+        env:
+          spring.datasource.url: ${{ secrets.DATASOURCE_URL }}
+          spring.datasource.username: ${{ secrets.DATASOURCE_USERNAME }}
+          spring.datasource.password: ${{ secrets.DATASOURCE_PASSWORD }}
+          jwt.secret: ${{ secrets.JWT_SECRET }}
+
       - name: executing remote ssh commands using ssh key
         uses: appleboy/ssh-action@v1.0.0
         with:
