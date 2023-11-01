@@ -15,16 +15,6 @@ jobs:
     name: Deploy
     runs-on: ubuntu-latest
     steps:
-      - name: Set project from github secret
-        uses: microsoft/variable-substitution@v1
-        with:
-          files: ./src/main/resources/application.yml
-        env:
-          spring.datasource.url: ${{ secrets.DATASOURCE_URL }}
-          spring.datasource.username: ${{ secrets.DATASOURCE_USERNAME }}
-          spring.datasource.password: ${{ secrets.DATASOURCE_PASSWORD }}
-          jwt.secret: ${{ secrets.JWT_SECRET }}
-
       - name: executing remote ssh commands using ssh key
         uses: appleboy/ssh-action@v1.0.0
         with:
@@ -33,9 +23,6 @@ jobs:
           key: ${{ secrets.KEY }}
           passphrase: ${{ secrets.PASSPHRASE }}
           port: ${{ secrets.PORT }}
-          spring.datasource.url: ${{ secrets.DATASOURCE_URL }}
-          spring.datasource.username: ${{ secrets.DATASOURCE_USERNAME }}
-          spring.datasource.password: ${{ secrets.DATASOURCE_PASSWORD }}
           script: |
             cd /home/minskim3/${{ env.PROJECT_NAME }}
 
@@ -43,6 +30,10 @@ jobs:
             git fetch --all
             git reset --hard origin/main
             git pull origin main
+
+            echo "DATASOURCE_URL=${{ secrets.DATASOURCE_URL }}" > .env
+            echo "DATASOURCE_USERNAME=${{ secrets.DATASOURCE_USERNAME }}" >> .env
+            echo "DATASOURCE_PASSWORD=${{ secrets.DATASOURCE_PASSWORD }}" >> .env
 
             if [ "$(docker ps -aq -f name=spring)" ]
             then
@@ -53,5 +44,5 @@ jobs:
               echo "[ spring is not running ]"
               echo "[ run spring ]"
               docker build -t dango-plate .
-              docker run -d -p ${{ secrets.SPRING_PORT }}:${{ secrets.SPRING_PORT}} --name spring -v /home/minskim3/${{ env.PROJECT_NAME }}:/backend/${{env.PROJECT_NAME }} dango-plate
+              docker run -d -p ${{ secrets.SPRING_PORT }}:${{ secrets.SPRING_PORT}} --env-file ./.env --name spring -v /home/minskim3/${{ env.PROJECT_NAME }}:/backend/${{env.PROJECT_NAME }} dango-plate
             fi
