@@ -1,7 +1,6 @@
 spring:
   profiles:
     include: real
-
 #  h2:
 #    console:
 #      enabled: true
@@ -14,9 +13,9 @@ spring:
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: ${{ DATASOURCE_URL }}
-    username: ${{ DATASOURCE_USERNAME }}
-    password: ${{ DATASOURCE_PASSWORD }}
+    url: ${DATASOURCE_URL}
+    username: ${DATASOURCE_USERNAME}
+    password: ${DATASOURCE_PASSWORD}
 
 
   jpa:
@@ -41,3 +40,6 @@ jwt:
   access-token-seconds: 600
   refresh-token-seconds: 6000
 
+kakao:
+  api-url: https://dapi.kakao.com/v2/local/search/keyword.json
+  rest-api-key: ${KAKAO_REST_API_KEY}
