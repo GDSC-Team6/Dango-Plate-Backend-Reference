@@ -34,6 +34,7 @@ jobs:
             echo "DATASOURCE_URL=${{ secrets.DATASOURCE_URL }}" > .env
             echo "DATASOURCE_USERNAME=${{ secrets.DATASOURCE_USERNAME }}" >> .env
             echo "DATASOURCE_PASSWORD=${{ secrets.DATASOURCE_PASSWORD }}" >> .env
+            echo "KAKAO_REST_API_KEY=${{ secrets.KAKAO_REST_API_KEY }}" >> .env
 
             if [ "$(docker ps -aq -f name=spring)" ]
             then
