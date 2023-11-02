@@ -36,14 +36,16 @@ jobs:
             echo "DATASOURCE_PASSWORD=${{ secrets.DATASOURCE_PASSWORD }}" >> .env
             echo "KAKAO_REST_API_KEY=${{ secrets.KAKAO_REST_API_KEY }}" >> .env
 
+            docker build -t dango-plate .
+            
             if [ "$(docker ps -aq -f name=spring)" ]
             then
               echo "[ spring is running ]"
               echo "[ restart spring ]"
-              docker restart spring
+              docker rm spring  
             else
               echo "[ spring is not running ]"
               echo "[ run spring ]"
-              docker build -t dango-plate .
-              docker run -d -p ${{ secrets.SPRING_PORT }}:${{ secrets.SPRING_PORT}} --env-file ./.env --name spring -v /home/minskim3/${{ env.PROJECT_NAME }}:/backend/${{env.PROJECT_NAME }} dango-plate
             fi
+            
+            docker run -d -p ${{ secrets.SPRING_PORT }}:${{ secrets.SPRING_PORT}} --env-file ./.env --name spring -v /home/minskim3/${{ env.PROJECT_NAME }}:/backend/${{env.PROJECT_NAME }} dango-plate
