@@ -3,6 +3,7 @@ package com.example.dango.user.entity;
 
 import com.example.dango.global.entity.BaseEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.sun.istack.NotNull;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
@@ -29,16 +30,21 @@ public class User extends BaseEntity {
     @Column(name = "id")
     private Long id;
 
+    @Column(nullable=false)
     private String username; //로그인할 때 사용하는 아이디(이메일)
 
+    @Column(nullable=false)
     private String password;
 
+    @Column(nullable=false)
     private String name;
 
+    @Column(nullable=false)
     private String phone;
 
-    @Column(name = "image_url")
+    @Column(name = "image_url", nullable=false)
     private String imageUrl;
+
 
     private String social;
 
