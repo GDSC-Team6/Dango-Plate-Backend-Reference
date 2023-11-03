@@ -42,6 +42,7 @@ jobs:
             then
               echo "[ spring is running ]"
               echo "[ restart spring ]"
+              docker stop spring
               docker rm spring  
             else
               echo "[ spring is not running ]"
