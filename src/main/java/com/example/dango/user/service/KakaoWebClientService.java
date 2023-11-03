@@ -21,11 +21,7 @@ public class KakaoWebClientService {
     private final WebClient webClient;
 
     public KakaoWebClientService() {
-        this.webClient = WebClient.builder()
-                .baseUrl(kakaoApiUrl)
-                .defaultHeader("Content-type", "application/x-www-form-urlencoded; charset=utf-8")
-                .defaultHeader("Authorization", "KakaoAK " + kakaoApiKey)
-                .build();
+        this.webClient = WebClient.create();
     }
 
     public Map<String, Object> get(MultiValueMap<String, String> query) {
@@ -33,10 +29,9 @@ public class KakaoWebClientService {
         Map<String, Object> response =
             webClient
                 .get()
-                .uri(uriBuilder ->
-                    uriBuilder
-                        .queryParams(query)
-                        .build())
+                .uri(kakaoApiUrl + "/v2/local/search/keyword.json?query=" + query.getFirst("query"))
+                .header("Content-type", "application/x-www-form-urlencoded; charset=utf-8")
+                .header("Authorization", "KakaoAK " + kakaoApiKey)
                 .retrieve()
                 .bodyToMono(Map.class)
                 .block();
