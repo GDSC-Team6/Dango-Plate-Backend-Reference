@@ -41,5 +41,5 @@ jwt:
   refresh-token-seconds: 6000
 
 kakao:
-  api-url: https://dapi.kakao.com/v2/local/search/keyword.json
+  api-url: https://dapi.kakao.com
   rest-api-key: ${KAKAO_REST_API_KEY}
