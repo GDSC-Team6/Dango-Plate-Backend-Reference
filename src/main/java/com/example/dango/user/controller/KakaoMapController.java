@@ -1,5 +1,6 @@
 package com.example.dango.user.controller;
 
+import com.example.dango.global.entity.ApiResponse;
 import com.example.dango.user.service.KakaoWebClientService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -22,9 +23,9 @@ public class KakaoMapController {
     private final KakaoWebClientService kakaoWebClientService;
     @ApiOperation(value = "카카오 맵 검색", notes = "카카오 맵 검색")
     @GetMapping("/search")
-    public Map<String, Object> search(@RequestParam String query) {
+    public ApiResponse<Map<String, Object>> search(@RequestParam String query) {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("query", query);
-        return kakaoWebClientService.get(params);
+        return new ApiResponse<>(kakaoWebClientService.get(params));
     }
 }
