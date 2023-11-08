@@ -1,5 +1,6 @@
-package com.example.dango.user.service;
+package com.example.dango.kakaoMap.service;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -7,6 +8,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.Map;
+import java.util.Objects;
 
 @Service
 @Slf4j
@@ -24,9 +26,9 @@ public class KakaoWebClientService {
         this.webClient = WebClient.create();
     }
 
-    public Map<String, Object> get(MultiValueMap<String, String> query) {
+    public Map<?, ?> get(MultiValueMap<String, String> query) {
         // api 요청
-        Map<String, Object> response =
+        Map<?, ?> response =
             webClient
                 .get()
                 .uri(kakaoApiUrl + "/v2/local/search/keyword.json?query=" + query.getFirst("query"))
@@ -37,7 +39,7 @@ public class KakaoWebClientService {
                 .block();
 
         // 결과 확인
-        log.info(response.toString());
+        log.info(Objects.requireNonNull(response).toString());
         return response;
     }
 }

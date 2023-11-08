@@ -1,9 +1,8 @@
-package com.example.dango.user.controller;
+package com.example.dango.kakaoMap.controller;
 
-import com.example.dango.user.service.KakaoWebClientService;
+import com.example.dango.kakaoMap.service.KakaoWebClientService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -22,7 +21,7 @@ public class KakaoMapController {
     private final KakaoWebClientService kakaoWebClientService;
     @ApiOperation(value = "카카오 맵 검색", notes = "카카오 맵 검색")
     @GetMapping("/search")
-    public Map<String, Object> search(@RequestParam String query) {
+    public Map<?, ?> search(@RequestParam String query) {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("query", query);
         return kakaoWebClientService.get(params);
