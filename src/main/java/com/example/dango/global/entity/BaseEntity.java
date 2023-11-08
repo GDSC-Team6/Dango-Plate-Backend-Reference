@@ -3,9 +3,7 @@ package com.example.dango.global.entity;
 import lombok.Generated;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.DynamicInsert;
-import org.hibernate.annotations.DynamicUpdate;
-import org.hibernate.annotations.GenerationTime;
+import org.hibernate.annotations.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -25,15 +23,14 @@ import static org.hibernate.annotations.GenerationTime.*;
 @EntityListeners(AuditingEntityListener.class)
 public class BaseEntity {
 
-    @CreatedDate
-    //@Generated(GenerationTime.INSERT)
-    @Temporal(TemporalType.TIMESTAMP)
+    //@CreatedDate
+    @CreationTimestamp
     @Column(name = "created_at")
-    private Date createdAt;
+    private LocalDateTime createdAt;
 
-    @LastModifiedDate
-    @Temporal(TemporalType.TIMESTAMP)
+    //@LastModifiedDate
+    @UpdateTimestamp
     @Column(name = "updated_at")
-    private Date updatedAt;
+    private LocalDateTime updatedAt;
 
 }
