@@ -21,9 +21,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -49,33 +47,33 @@ public class UserService {
             throw new ServerErrorException("accessToken이 없습니다");
         }
 
-        return userRepository.findUserByUsername(username).get();
+        return userRepository.findUserByKakaoId(Long.valueOf(username)).get();
     }
 
 
     @Transactional
-    public UserRes.UserDetailDto signup(UserReq.SignupUserDto signupUserDto) {
-        if (userRepository.existsByUsername(signupUserDto.getUsername())) {
-            throw new BadRequestException("이미 가입되어 있는 유저입니다.");
-        }
-
-        Authority authority = Authority.builder()
-                .authorityName("ROLE_USER")
-                .build();
-
-        User user = User.builder()
-                .username(signupUserDto.getUsername())
-                .password(passwordEncoder.encode(signupUserDto.getPassword()))
-                .name(signupUserDto.getName())
-                .phone(signupUserDto.getPhone())
-                .imageUrl(signupUserDto.getImageUrl())
-                .authorities(Collections.singletonList(authority))
-                .build();
-
-        userRepository.save(user);
-
-        return UserRes.UserDetailDto.toDto(user);
-    }
+//    public UserRes.UserDetailDto signup(UserReq.SignupUserDto signupUserDto) {
+//        if (userRepository.existsByKakaoId(signupUserDto.getUsername())) {
+//            throw new BadRequestException("이미 가입되어 있는 유저입니다.");
+//        }
+//
+//        Authority authority = Authority.builder()
+//                .authorityName("ROLE_USER")
+//                .build();
+//
+//        User user = User.builder()
+//                .username(signupUserDto.getUsername())
+//                .password(passwordEncoder.encode(signupUserDto.getPassword()))
+//                .name(signupUserDto.getName())
+//                .phone(signupUserDto.getPhone())
+//                .imageUrl(signupUserDto.getImageUrl())
+//                .authorities(Collections.singletonList(authority))
+//                .build();
+//
+//        userRepository.save(user);
+//
+//        return UserRes.UserDetailDto.toDto(user);
+//    }
 
     //전화번호 양식 체크
     public boolean validationEmail(String email){
@@ -103,37 +101,37 @@ public class UserService {
 
 
 
-    @Transactional
-    public TokenRes login(UserReq.LoginUserDto loginUserDto){
-        Optional<User> optionalUser = userRepository.findUserByUsername(loginUserDto.getUsername());
-        if(optionalUser.isPresent()) {
-            User user = optionalUser.get();
-            if(passwordEncoder.matches(loginUserDto.getPassword(), user.getPassword())) {
-
-                //인증토큰 생성
-                UsernamePasswordAuthenticationToken authenticationToken =
-                        new UsernamePasswordAuthenticationToken(loginUserDto.getUsername(), loginUserDto.getPassword());
-
-                Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
-                SecurityContextHolder.getContext().setAuthentication(authentication); //SecurityContext에 저장
-
-
-                User loginUser = optionalUser.get();
-                Long userId = loginUser.getId();
-                GenerateToken generateToken = tokenProvider.createAllToken(userId);
-
-                return TokenRes.builder()
-                        .username(loginUser.getUsername())
-                        .accessToken(generateToken.getAccessToken())
-                        .refreshToken(generateToken.getRefreshToken())
-                        .build();
-            } else{
-                throw new BadRequestException("비밀번호를 다시 입력해주세요");
-            }
-        } else{
-            throw new BadRequestException("존재하지 않는 회원입니다");
-        }
-    }
+//    @Transactional
+//    public TokenRes login(UserReq.LoginUserDto loginUserDto){
+//        Optional<User> optionalUser = userRepository.findUserByKakaoId(loginUserDto.getUsername());
+//        if(optionalUser.isPresent()) {
+//            User user = optionalUser.get();
+//            if(passwordEncoder.matches(loginUserDto.getPassword(), user.getPassword())) {
+//
+//                //인증토큰 생성
+//                UsernamePasswordAuthenticationToken authenticationToken =
+//                        new UsernamePasswordAuthenticationToken(loginUserDto.getUsername(), loginUserDto.getPassword());
+//
+//                Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+//                SecurityContextHolder.getContext().setAuthentication(authentication); //SecurityContext에 저장
+//
+//
+//                User loginUser = optionalUser.get();
+//                Long userId = loginUser.getId();
+//                GenerateToken generateToken = tokenProvider.createAllToken(userId);
+//
+//                return TokenRes.builder()
+//                        .kakaoId(loginUser.getKakaoId())
+//                        .accessToken(generateToken.getAccessToken())
+//                        .refreshToken(generateToken.getRefreshToken())
+//                        .build();
+//            } else{
+//                throw new BadRequestException("비밀번호를 다시 입력해주세요");
+//            }
+//        } else{
+//            throw new BadRequestException("존재하지 않는 회원입니다");
+//        }
+//    }
 
 
 

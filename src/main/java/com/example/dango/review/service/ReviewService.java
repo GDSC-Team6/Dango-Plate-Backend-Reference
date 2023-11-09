@@ -19,6 +19,7 @@ import java.util.Optional;
 @Transactional
 public class ReviewService {
     private final ReviewRepository reviewRepository;
+
     public Review getReview(Long reviewId) {
         Optional<Review> review = reviewRepository.findById(reviewId);
         if (review.isPresent()) {

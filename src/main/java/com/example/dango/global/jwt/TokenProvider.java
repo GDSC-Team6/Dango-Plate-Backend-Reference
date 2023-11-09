@@ -116,9 +116,9 @@ public class TokenProvider implements InitializingBean {
         Long userId = claims.get("userId",Long.class);
 
         User user = userRepository.findUserById(userId).get();
-        String userName = user.getUsername();
+        String kakaoId = String.valueOf(user.getKakaoId());
 
-        UserDetails userDetails = customUserDetailsService.loadUserByUsername(userName);
+        UserDetails userDetails = customUserDetailsService.loadUserByUsername(kakaoId);
 
         return new UsernamePasswordAuthenticationToken(userDetails, token, userDetails.getAuthorities());
     }

@@ -1,14 +1,16 @@
 package com.example.dango.review.dto;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.example.dango.review.entity.Review;
+import lombok.*;
+
+import java.util.List;
 
 @Builder
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class ReviewRes {
-
+    Review review;
+    List<String> urls;
 }

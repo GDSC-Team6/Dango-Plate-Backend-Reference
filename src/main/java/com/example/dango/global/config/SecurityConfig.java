@@ -70,7 +70,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/user/**").permitAll()
                 .antMatchers("/map/**").permitAll()
                 .antMatchers("/oauth/**").permitAll()
-                .antMatchers("/review/**").permitAll()
 
 
                 .anyRequest().authenticated() //위의 api가 아닌 경로는 모두 jwt 토큰 인증을 해야 함

@@ -10,7 +10,7 @@ import lombok.*;
 @Setter
 @Getter
 public class TokenRes {
-    private String username;
+    private Long kakaoId;
     private String accessToken;
     private String refreshToken;
 }

@@ -31,15 +31,25 @@ spring:
     pathmatch:
       matching-strategy: ant_path_matcher
 
+  cloud:
+    gcp:
+      storage:
+        credentials:
+          location: classpath:gcs-key.json
+        project-id: delta-pagoda-398907
+        bucket: dango-image
+
 jwt:
   header: Authorization
   #echo 'silvernine-tech-spring-boot-jwt-tutorial-secret-silvernine-tech-spring-boot-jwt-tutorial-secret'|base64
-  secret: hellothisismydangoplageserverjwtsecretkeyhellothisismydangoplageserverjwtsecretkey
+  secret: hellothisismydangoplageserverjwtsecretkeyhellothisismydangoplageserverjwtsecretkeyhellothisismydangoplageserverjwtsecretkeyhellothisismydangoplageserverjwtsecretkeyhellothisismydangoplageserverjwtsecretkeyhellothisismydangoplageserverjwtsecretkey
   #token-validity-in-seconds: 86400
-  refresh: hellothisismydangoplageserverjwtsecretkeyhellothisismydangoplageserverjwtsecretkey
+  refresh: hellothisismydangoplageserverjwtsecretkeyhellothisismydangoplageserverjwtsecretkeyhellothisismydangoplageserverjwtsecretkeyhellothisismydangoplageserverjwtsecretkeyhellothisismydangoplageserverjwtsecretkeyhellothisismydangoplageserverjwtsecretkey
   access-token-seconds: 600
   refresh-token-seconds: 6000
 
 kakao:
+  client-id: b7efcdeef9cf0be8991e8d2fdc1dc2ba
+  redirect-uri: http://35.216.0.111:8080/oauth/kakao
   api-url: https://dapi.kakao.com
   rest-api-key: ${KAKAO_REST_API_KEY}
