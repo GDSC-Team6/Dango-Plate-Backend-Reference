@@ -33,16 +33,16 @@ public class User extends BaseEntity {
     @Column(nullable=false)
     private String username; //로그인할 때 사용하는 아이디(이메일)
 
-    @Column(nullable=false)
+    //@Column(nullable=false)
     private String password;
 
     @Column(nullable=false)
     private String name;
 
-    @Column(nullable=false)
+    //@Column(nullable=false)
     private String phone;
 
-    @Column(name = "image_url", nullable=false)
+    @Column(name = "image_url")
     private String imageUrl;
 
 
