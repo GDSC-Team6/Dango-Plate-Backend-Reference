@@ -8,6 +8,6 @@ import lombok.*;
 @Setter
 @Getter
 public class ReviewReq {
-    private String reviewContent;
-    private String shopUid;
+    private String review_content;
+    private String shop_uid;
 }

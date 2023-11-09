@@ -18,5 +18,5 @@ public class Shop extends BaseEntity {
     private Long id;
 
     @Column(name = "shop_uid")
-    private String shopUid;
+    private Long shopUid;
 }
