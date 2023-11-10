@@ -59,4 +59,17 @@ public class ImageService {
         }
         return urls;
     }
+
+    public String uploadTest(MultipartFile file) throws IOException {
+        String uuid = UUID.randomUUID().toString(); // Google Cloud Storage에 저장될 파일 이름
+        String ext = file.getContentType(); // 파일의 형식 ex) JPG
+
+        BlobInfo blobInfo = storage.create(
+                BlobInfo.newBuilder(BUCKET_NAME, uuid)
+                        .setContentType(ext)
+                        .build(),
+                file.getBytes()
+        );
+        return blobInfo.getMediaLink();
+    }
 }

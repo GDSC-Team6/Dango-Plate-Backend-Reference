@@ -3,6 +3,8 @@ package com.example.dango.review.service;
 import com.example.dango.review.dto.ReviewReq;
 import com.example.dango.review.entity.Review;
 import com.example.dango.review.repository.ReviewRepository;
+import com.example.dango.shop.entity.Shop;
+import com.example.dango.shop.repository.ShopRepository;
 import com.example.dango.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +21,7 @@ import java.util.Optional;
 @Transactional
 public class ReviewService {
     private final ReviewRepository reviewRepository;
+    private final ShopRepository shopRepository;
 
     public Review getReview(Long reviewId) {
         Optional<Review> review = reviewRepository.findById(reviewId);
@@ -30,11 +33,23 @@ public class ReviewService {
     }
 
     public Review postReview(User user, ReviewReq reviewReq) {
+        Shop shop = shopRepository.findByShopUid(reviewReq.getShop_uid()).orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.NOT_FOUND, "가게를 찾을 수 없습니다."));
         Review review = Review.builder()
                 .user(user)
+                .shop(shop)
                 .reviewContent(reviewReq.getReview_content())
                 .build();
         reviewRepository.save(review);
         return review;
+    }
+
+    public void deleteReview(User loginUser, Long reviewId) {
+        Review review = reviewRepository.findById(reviewId).orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.NOT_FOUND, "리뷰를 찾을 수 없습니다."));
+        if (review.getUser().getKakaoId() != loginUser.getKakaoId()) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "권한이 없습니다.");
+        }
+        reviewRepository.delete(review);
     }
 }

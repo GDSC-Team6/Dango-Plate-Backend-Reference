@@ -57,7 +57,7 @@ public class User extends BaseEntity {
     private List<Authority> authorities;
 
 
-    public static User toSocialLoginUser(Long kakao_id, String social, String name) {
+    public static User toSocialLoginUser(Long kakao_id, String social, String name, String profileUrl) {
         Authority authority = Authority.builder()
                 .authorityName("ROLE_USER")
                 .build();
@@ -66,7 +66,7 @@ public class User extends BaseEntity {
                 .kakaoId(kakao_id)
                 .name(name)
                 .password("")  //소셜로그인은 비밀번호x
-                .imageUrl("이미지url")
+                .imageUrl(profileUrl)
                 .authorities(Collections.singletonList(authority))
                 .social(social)
                 .build();
