@@ -45,7 +45,8 @@ public class UserRes {
 
         public static UserDetailDto toDto(User user){
             return UserDetailDto.builder()
-                    .username(user.getUsername())
+                    // 일단 kako 로그인만 구현하므로 막음
+//                    .username(user.getKakaoId())
                     .name(user.getName())
                     .phone(user.getPhone())
                     .imageUrl(user.getImageUrl())

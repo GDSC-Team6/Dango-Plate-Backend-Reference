@@ -5,7 +5,7 @@ on:
     branches: ['main']
 
 env:
-  PROJECT_ID: 'thermal-elixir-403003'
+  PROJECT_ID: 'delta-pagoda-398907'
   GCE_INSTANCE: 'dango-plate'
   GCE_INSTANCE_ZONE: 'asia-northeast3-a'
   PROJECT_NAME: 'Dango-Plate-Backend-Reference'

@@ -116,9 +116,9 @@ public class TokenProvider implements InitializingBean {
         Long userId = claims.get("userId",Long.class);
 
         User user = userRepository.findUserById(userId).get();
-        String userName = user.getUsername();
+        String kakaoId = String.valueOf(user.getKakaoId());
 
-        UserDetails userDetails = customUserDetailsService.loadUserByUsername(userName);
+        UserDetails userDetails = customUserDetailsService.loadUserByUsername(kakaoId);
 
         return new UsernamePasswordAuthenticationToken(userDetails, token, userDetails.getAuthorities());
     }
@@ -128,6 +128,7 @@ public class TokenProvider implements InitializingBean {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
         return request.getHeader(AUTHORIZATION_HEADER);
     }
+
 
     public Long getUserId() {
         String accessToken = getJwt();
@@ -144,7 +145,6 @@ public class TokenProvider implements InitializingBean {
     }
 
 
-
     public boolean validateToken(ServletRequest servletRequest, String token) {
         try {
             //Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
@@ -154,7 +154,6 @@ public class TokenProvider implements InitializingBean {
                     .setSigningKey(secret)
                     .parseClaimsJws(token);
             Long userId = claims.getBody().get("userId",Long.class);
-
 
             return true;
         } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
@@ -177,10 +176,10 @@ public class TokenProvider implements InitializingBean {
 //        //Redis 에 저장된 refreshToken 삭제
 //        redisService.deleteValues(String.valueOf(userId));
 //    }
+
     public Date getExpiredTime(String token){
         //받은 토큰의 유효 시간을 받아오기
         return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody().getExpiration();
     }
-
 
 }
