@@ -43,4 +43,13 @@ public class ReviewService {
         reviewRepository.save(review);
         return review;
     }
+
+    public void deleteReview(User loginUser, Long reviewId) {
+        Review review = reviewRepository.findById(reviewId).orElseThrow(() ->
+                new ResponseStatusException(HttpStatus.NOT_FOUND, "리뷰를 찾을 수 없습니다."));
+        if (review.getUser().getKakaoId() != loginUser.getKakaoId()) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "권한이 없습니다.");
+        }
+        reviewRepository.delete(review);
+    }
 }

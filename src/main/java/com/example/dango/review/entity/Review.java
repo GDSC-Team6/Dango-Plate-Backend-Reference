@@ -32,6 +32,6 @@ public class Review extends BaseEntity {
     @JoinColumn(name = "shop_id", nullable = false)
     private Shop shop;
 
-    @OneToMany(mappedBy = "review",fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "review",fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private List<ReviewImage> reviewImages;
 }

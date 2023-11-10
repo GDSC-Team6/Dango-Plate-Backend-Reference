@@ -11,6 +11,9 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ReviewRes {
-    Review review;
+    Long id;
+    Long user_id;
+    Long shop_id;
+    String content;
     List<String> urls;
 }
