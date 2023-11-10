@@ -30,26 +30,26 @@ public class UserController {
     }
 
 
-    @ApiOperation(value = "회원가입", notes = "회원가입")
-    @PostMapping("/signup")
-    public ApiResponse<UserRes.UserDetailDto> signup(@RequestBody UserReq.SignupUserDto signupUserDto) {
-        //이메일 형식 체크
-        if(userService.validationEmail(signupUserDto.getUsername()))
-            throw new BadRequestException("이메일 형식으로 입력해주세요");
+//    @ApiOperation(value = "회원가입", notes = "회원가입")
+//    @PostMapping("/signup")
+//    public ApiResponse<UserRes.UserDetailDto> signup(@RequestBody UserReq.SignupUserDto signupUserDto) {
+//        //이메일 형식 체크
+//        if(userService.validationEmail(signupUserDto.getUsername()))
+//            throw new BadRequestException("이메일 형식으로 입력해주세요");
+//
+//        //비밀번호 형식 체크
+//        if(signupUserDto.getPassword().length() < 6)
+//            throw new BadRequestException("비밀번호를 6자리 이상 입력해주세요");
+//
+//        return new ApiResponse<>(userService.signup(signupUserDto));
+//    }
 
-        //비밀번호 형식 체크
-        if(signupUserDto.getPassword().length() < 6)
-            throw new BadRequestException("비밀번호를 6자리 이상 입력해주세요");
 
-        return new ApiResponse<>(userService.signup(signupUserDto));
-    }
-
-
-    @ApiOperation(value = "로그인", notes = "로그인")
-    @PostMapping("/login")
-    public ApiResponse<TokenRes> signup(@RequestBody UserReq.LoginUserDto loginUserDto) {
-        return new ApiResponse<>(userService.login(loginUserDto));
-    }
+//    @ApiOperation(value = "로그인", notes = "로그인")
+//    @PostMapping("/login")
+//    public ApiResponse<TokenRes> signup(@RequestBody UserReq.LoginUserDto loginUserDto) {
+//        return new ApiResponse<>(userService.login(loginUserDto));
+//    }
 
 
     @ApiOperation(value = "회원 정보 수정", notes = "회원 정보 수정")

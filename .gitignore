@@ -38,3 +38,5 @@ out/
 
 application-real.yml
 .env
+gcs-key.json
+

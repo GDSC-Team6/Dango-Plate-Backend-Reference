@@ -3,7 +3,6 @@ package com.example.dango.user.entity;
 
 import com.example.dango.global.entity.BaseEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.sun.istack.NotNull;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
@@ -31,7 +30,7 @@ public class User extends BaseEntity {
     private Long id;
 
     @Column(nullable=false)
-    private String username; //로그인할 때 사용하는 아이디(이메일)
+    private Long kakaoId; //로그인할 때 사용하는 아이디(이메일)
 
     //@Column(nullable=false)
     private String password;
@@ -50,7 +49,7 @@ public class User extends BaseEntity {
 
 
     @JsonIgnore
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_authority",
             joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
@@ -58,13 +57,13 @@ public class User extends BaseEntity {
     private List<Authority> authorities;
 
 
-    public static User toSocialLoginUser(String email, String social, String name) {
+    public static User toSocialLoginUser(Long kakao_id, String social, String name) {
         Authority authority = Authority.builder()
                 .authorityName("ROLE_USER")
                 .build();
 
         User user = User.builder()
-                .username(email)
+                .kakaoId(kakao_id)
                 .name(name)
                 .password("")  //소셜로그인은 비밀번호x
                 .imageUrl("이미지url")

@@ -5,7 +5,6 @@ import com.example.dango.global.jwt.TokenProvider;
 import com.example.dango.user.repository.UserRepository;
 import com.example.dango.user.dto.GenerateToken;
 import com.example.dango.user.dto.TokenRes;
-import com.example.dango.user.dto.UserReq;
 import com.example.dango.user.entity.User;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
@@ -26,7 +25,10 @@ public class AuthService {
     private final UserRepository userRepository;
     private final TokenProvider tokenProvider;
     private final UserService userService;
-
+    @Value("${kakao.client-id}")
+    private String kakaoClientId;
+    @Value("${kakao.redirect-uri}")
+    private String redirectUri;
 
     public String getKakaoAccessToken(String code) {
         String access_Token="";
@@ -45,8 +47,8 @@ public class AuthService {
             BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(conn.getOutputStream()));
             StringBuilder sb = new StringBuilder();
             sb.append("grant_type=authorization_code");
-            sb.append("&client_id=e0b9b82b8126cbdf0c5758786b518f66");
-            sb.append("&redirect_uri=http://localhost:8080/oauth/kakao");
+            sb.append("&client_id=" + kakaoClientId);
+            sb.append("&redirect_uri=" + redirectUri);
             sb.append("&code=" + code);
             bw.write(sb.toString());
             bw.flush();
@@ -119,31 +121,38 @@ public class AuthService {
             JsonParser parser = new JsonParser();
             JsonElement element = parser.parse(result);
 
-            Long id = element.getAsJsonObject().get("id").getAsLong(); //카카오의 인덱스
+            Long kakaoId = element.getAsJsonObject().get("id").getAsLong(); //카카오의 인덱스
 
-            boolean hasEmail = element.getAsJsonObject().get("kakao_account").getAsJsonObject().get("has_email").getAsBoolean();
-            String email = ""; //카카오 계정의 이메일
-            if (hasEmail) {
-                email = element.getAsJsonObject().get("kakao_account").getAsJsonObject().get("email").getAsString();
-            }
+            /**
+             * 이메일은 사용 안할 것 같아서 주석처리
+             * */
+//            JsonElement jsonElement = element.getAsJsonObject().get("kakao_account").getAsJsonObject().get("has_email");
+//            boolean hasEmail = false;
+//            if (jsonElement != null) {
+//                hasEmail = jsonElement.getAsBoolean();
+//            }
+//            String email = ""; //카카오 계정의 이메일
+//            if (hasEmail) {
+//                email = element.getAsJsonObject().get("kakao_account").getAsJsonObject().get("email").getAsString();
+//            }
 
             //카카오에 저장된 이름
             String name = element.getAsJsonObject().get("properties").getAsJsonObject().get("nickname").getAsString();
 
-
             //카카오 계정의 이메일과 현재 일반 회원가입한 이메일 중에서 같은 것이 없다면 카카오 계정의 이메일로 회원가입
-            if(!userRepository.existsByUsernameAndSocial(String.valueOf(email),"kakao")){
-                User user = User.toSocialLoginUser(String.valueOf(email),"kakao", name);
+            // 이메일이 제공되니 않는 유저도 있기 때문에 여기 id 값을 기준으로 로그인 하게 수정했음.
+            if(!userRepository.existsByKakaoIdAndSocial(kakaoId,"kakao")){
+                User user = User.toSocialLoginUser(kakaoId,"kakao", name);
                 userRepository.save(user);
             }
             br.close();
 
             //로그인
-            User user = userRepository.findByUsernameAndSocial(String.valueOf(email),"kakao");
+            User user = userRepository.findByKakaoIdAndSocial(kakaoId,"kakao");
             GenerateToken generateToken = tokenProvider.createAllToken(user.getId());
 
             return TokenRes.builder()
-                    .username(user.getUsername())
+                    .kakaoId(user.getKakaoId())
                     .accessToken(generateToken.getAccessToken())
                     .refreshToken(generateToken.getRefreshToken())
                     .build();
