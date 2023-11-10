@@ -138,11 +138,16 @@ public class AuthService {
 
             //카카오에 저장된 이름
             String name = element.getAsJsonObject().get("properties").getAsJsonObject().get("nickname").getAsString();
+            JsonElement jsonElement = element.getAsJsonObject().get("properties").getAsJsonObject().get("profile_image");
+            String profileUrl = "";
+            if (jsonElement != null) {
+                profileUrl = jsonElement.getAsString();
+            }
 
             //카카오 계정의 이메일과 현재 일반 회원가입한 이메일 중에서 같은 것이 없다면 카카오 계정의 이메일로 회원가입
             // 이메일이 제공되니 않는 유저도 있기 때문에 여기 id 값을 기준으로 로그인 하게 수정했음.
             if(!userRepository.existsByKakaoIdAndSocial(kakaoId,"kakao")){
-                User user = User.toSocialLoginUser(kakaoId,"kakao", name);
+                User user = User.toSocialLoginUser(kakaoId,"kakao", name, profileUrl);
                 userRepository.save(user);
             }
             br.close();

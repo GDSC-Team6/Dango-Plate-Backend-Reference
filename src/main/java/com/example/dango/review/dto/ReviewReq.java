@@ -11,5 +11,5 @@ import java.util.List;
 @Getter
 public class ReviewReq {
     private String review_content;
-    private String shop_uid;
+    private Long shop_uid;
 }

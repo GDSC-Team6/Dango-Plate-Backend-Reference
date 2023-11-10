@@ -17,6 +17,6 @@ public class Shop extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "shop_uid")
+    @Column(name = "shop_uid", nullable = false, unique = true)
     private Long shopUid;
 }

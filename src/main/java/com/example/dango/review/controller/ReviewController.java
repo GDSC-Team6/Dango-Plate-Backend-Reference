@@ -6,6 +6,8 @@ import com.example.dango.review.dto.ReviewReq;
 import com.example.dango.review.dto.ReviewRes;
 import com.example.dango.review.entity.Review;
 import com.example.dango.review.service.ReviewService;
+import com.example.dango.shop.entity.Shop;
+import com.example.dango.shop.service.ShopService;
 import com.example.dango.user.entity.User;
 import com.example.dango.user.service.UserService;
 import io.swagger.annotations.Api;
@@ -49,16 +51,14 @@ public class ReviewController {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다.");
         }
         try {
-            log.info("reviewReq: {}", reviewReq);
             Review review = reviewService.postReview(loginUser, reviewReq);
-            log.info("review: {}", review);
             List<String> urls = imageService.uploadReviewImages(images, review);
-            log.info("urls: {}", urls);
             return new ApiResponse<>(ReviewRes.builder()
                     .review(review)
                     .urls(urls)
                     .build());
         } catch (Exception e) {
+            log.error("리뷰를 작성할 수 없습니다. {}", e);
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "리뷰를 작성할 수 없습니다.");
         }
     }

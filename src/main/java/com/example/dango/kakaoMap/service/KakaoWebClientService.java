@@ -46,9 +46,13 @@ public class KakaoWebClientService {
         List<?> document = Objects.requireNonNull(response).get("documents") != null ? (List<?>) response.get("documents") : null;
         if (document != null) {
             for (Object o : document) {
-                Map<?, ?> map = (Map<?, ?>) o;
+                Map<String, String> map = (Map<String, String>) o;
+                Long shopUid = Long.parseLong(map.get("id"));
+                if (shopRepository.findByShopUid(shopUid).isPresent()) {
+                    continue;
+                }
                 Shop shop = Shop.builder()
-                        .shopUid(Long.parseLong((String) map.get("id")))
+                        .shopUid(shopUid)
                         .build();
                 shopRepository.save(shop);
             }
