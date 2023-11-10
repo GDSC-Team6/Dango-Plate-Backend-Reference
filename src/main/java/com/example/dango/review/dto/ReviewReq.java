@@ -5,7 +5,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Setter
@@ -13,5 +12,4 @@ import java.util.List;
 public class ReviewReq {
     private String review_content;
     private String shop_uid;
-    private List<MultipartFile> images;
 }
