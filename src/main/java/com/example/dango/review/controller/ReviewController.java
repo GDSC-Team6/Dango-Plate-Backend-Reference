@@ -88,6 +88,7 @@ public class ReviewController {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다.");
         }
         try {
+            imageService.deleteReviewImages(reviewId);
             reviewService.deleteReview(loginUser, reviewId);
             return new ApiResponse<>("리뷰 삭제 성공");
         } catch (Exception e) {
