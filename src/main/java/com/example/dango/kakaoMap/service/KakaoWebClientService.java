@@ -5,7 +5,6 @@ import com.example.dango.shop.repository.ShopRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
@@ -13,7 +12,7 @@ import java.util.Map;
 import java.util.Objects;
 
 @Service
-@Slf4j
+@Slf4j(topic = "KakaoWebClientService")
 public class KakaoWebClientService {
 
     @Value("${kakao.api-url}")
@@ -31,12 +30,23 @@ public class KakaoWebClientService {
         this.shopRepository = shopRepository;
     }
 
-    public Map<?, ?> get(MultiValueMap<String, String> query) {
+    public Map<?, ?> get(String query, String x, String y, String radius) {
         // api 요청
+        String url = kakaoApiUrl + "/v2/local/search/keyword.json?";
+        if (x != null && !x.isEmpty()) {
+            url += "x=" + x + "&";
+        }
+        if (y != null && !y.isEmpty()) {
+            url += "y=" + y + "&";
+        }
+        if (radius != null && !radius.isEmpty()) {
+            url += "radius=" + radius + "&";
+        }
+
         Map<?, ?> response =
             webClient
                 .get()
-                .uri(kakaoApiUrl + "/v2/local/search/keyword.json?query=" + query.getFirst("query"))
+                .uri(url + "query=" + query)
                 .header("Content-type", "application/x-www-form-urlencoded; charset=utf-8")
                 .header("Authorization", "KakaoAK " + kakaoApiKey)
                 .retrieve()
