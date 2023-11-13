@@ -2,6 +2,7 @@ package com.example.dango.image.service;
 
 import com.example.dango.image.entity.ReviewImage;
 import com.example.dango.image.repository.ReviewImageRepository;
+import com.example.dango.image.repository.ShopImageRepository;
 import com.example.dango.review.entity.Review;
 import com.example.dango.review.repository.ReviewRepository;
 import com.google.cloud.storage.Blob;
@@ -28,32 +29,25 @@ public class ImageService {
     private final Storage storage;
     private static final String BUCKET_NAME = "dango-image";
     private final ReviewImageRepository reviewImageRepository;
+    private final ShopImageRepository shopImageRepository;
     private final ReviewRepository reviewRepository;
 
     public String uploadReviewImage(MultipartFile file, Review review) throws IOException {
         String fileName = UUID.randomUUID() + file.getOriginalFilename(); // Google Cloud Storage에 저장될 파일 이름
         String ext = file.getContentType(); // 파일의 형식 ex) JPG
 
-        log.info("fileName: {}", fileName);
-        log.debug("ext: {}", ext);
         BlobInfo blobInfo = storage.create(
                 BlobInfo.newBuilder(BUCKET_NAME, fileName)
                         .setContentType(ext)
                         .build(),
                 file.getBytes()
         );
-        log.info("blobInfo: {}", blobInfo);
-        log.debug("blobInfo: {}", blobInfo);
         String url = blobInfo.getMediaLink();
-        log.info("url: {}", url);
-        log.debug("url: {}", url);
         ReviewImage reviewImage = ReviewImage.builder()
                 .review(review)
                 .imageName(fileName)
                 .url(url)
                 .build();
-        log.info("reviewImage: {}", reviewImage);
-        log.debug("reviewImage: {}", reviewImage);
         reviewImageRepository.save(reviewImage);
         return url;
     }
