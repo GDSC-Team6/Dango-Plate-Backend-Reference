@@ -7,7 +7,13 @@ import lombok.*;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "favorite")
+@Table(name = "favorite", uniqueConstraints={
+    @UniqueConstraint(
+        name = "unique favorite",
+        columnNames = {
+            "user_id",
+            "shop_id"
+    })})
 @Getter
 @Setter
 @Builder

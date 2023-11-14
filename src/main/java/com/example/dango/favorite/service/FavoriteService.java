@@ -33,7 +33,11 @@ public class FavoriteService {
                 .user(user)
                 .shop(shop)
                 .build();
-        return favoriteRepository.save(favorite);
+        try {
+            return favoriteRepository.save(favorite);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "이미 즐겨찾기에 추가된 가게입니다.");
+        }
     }
 
     public void deleteFavorite(Long favoriteId) {
