@@ -1,6 +1,7 @@
 package com.example.dango.user.entity;
 
 
+import com.example.dango.favorite.entity.Favorite;
 import com.example.dango.global.entity.BaseEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
@@ -46,6 +47,9 @@ public class User extends BaseEntity {
 
 
     private String social;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    private List<Favorite> favorites;
 
 
     @JsonIgnore
