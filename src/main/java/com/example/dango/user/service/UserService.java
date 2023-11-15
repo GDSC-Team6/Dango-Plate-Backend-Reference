@@ -5,6 +5,7 @@ import com.example.dango.global.exception.BadRequestException;
 import com.example.dango.global.exception.ServerErrorException;
 import com.example.dango.global.jwt.TokenProvider;
 import com.example.dango.user.entity.Authority;
+import com.example.dango.user.repository.AuthorityRepository;
 import com.example.dango.user.repository.UserRepository;
 import com.example.dango.user.dto.GenerateToken;
 import com.example.dango.user.dto.TokenRes;
@@ -35,6 +36,7 @@ public class UserService {
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final PasswordEncoder passwordEncoder;
     private final TokenProvider tokenProvider;
+    private final AuthorityRepository authorityRepository;
 
 
 
@@ -133,6 +135,19 @@ public class UserService {
 //        }
 //    }
 
+
+    public User toSocialLoginUser(Long kakao_id, String social, String name, String profileUrl) {
+        Authority authority = authorityRepository.findByAuthorityName("ROLE_USER").get();
+        User user = User.builder()
+            .kakaoId(kakao_id)
+            .name(name)
+            .password("")  //소셜로그인은 비밀번호x
+            .imageUrl(profileUrl)
+            .authorities(Collections.singletonList(authority))
+            .social(social)
+            .build();
+        return user;
+    }
 
 
     public String withdrawal() {
