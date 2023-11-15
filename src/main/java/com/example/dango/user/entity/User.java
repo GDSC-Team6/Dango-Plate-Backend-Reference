@@ -48,6 +48,8 @@ public class User extends BaseEntity {
 
     private String social;
 
+
+    @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private List<Favorite> favorites;
 
@@ -61,21 +63,5 @@ public class User extends BaseEntity {
     private List<Authority> authorities;
 
 
-    public static User toSocialLoginUser(Long kakao_id, String social, String name, String profileUrl) {
-        Authority authority = Authority.builder()
-                .authorityName("ROLE_USER")
-                .build();
-
-        User user = User.builder()
-                .kakaoId(kakao_id)
-                .name(name)
-                .password("")  //소셜로그인은 비밀번호x
-                .imageUrl(profileUrl)
-                .authorities(Collections.singletonList(authority))
-                .social(social)
-                .build();
-
-        return user;
-    }
 
 }
