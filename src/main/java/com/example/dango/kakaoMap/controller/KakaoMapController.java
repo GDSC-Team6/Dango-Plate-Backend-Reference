@@ -19,8 +19,6 @@ import java.util.Map;
 @RequiredArgsConstructor
 @RequestMapping("/map")
 public class KakaoMapController {
-    private static final String KeywordEndPoint = "/v2/local/search/keyword.json";
-
     private final KakaoWebClientService kakaoWebClientService;
     @ApiOperation(value = "카카오 맵 검색", notes = "키워드는 필수이고 x, y, radius는 선택항목입니다." +
             "x, y, radius를 모두 입력하면 중심좌표를 기준으로 반경 내에 있는 장소를 검색합니다. x, y, radius를 입력하지 않으면 키워드를 기준으로 검색합니다." +
