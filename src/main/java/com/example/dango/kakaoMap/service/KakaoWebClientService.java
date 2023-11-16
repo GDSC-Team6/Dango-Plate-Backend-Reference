@@ -14,20 +14,20 @@ import java.util.Objects;
 @Service
 @Slf4j(topic = "KakaoWebClientService")
 public class KakaoWebClientService {
-
-    @Value("${kakao.api-url}")
-    private String kakaoApiUrl;
-
-    @Value("${kakao.rest-api-key}")
-    private String kakaoApiKey;
+    private final String kakaoApiUrl;
+    private final String kakaoApiKey;
 
     private final ShopRepository shopRepository;
 
     private final WebClient webClient;
 
-    public KakaoWebClientService(ShopRepository shopRepository) {
+    public KakaoWebClientService(ShopRepository shopRepository,
+                                 @Value("${kakao.api-url}") String kakaoApiUrl,
+                                 @Value("${kakao.rest-api-key}") String kakaoApiKey) {
         this.webClient = WebClient.create();
         this.shopRepository = shopRepository;
+        this.kakaoApiUrl = kakaoApiUrl;
+        this.kakaoApiKey = kakaoApiKey;
     }
 
     public Map<?, ?> get(String query, String x, String y, String radius) {
