@@ -7,6 +7,7 @@ import com.example.dango.shop.dto.ShopRes;
 import com.example.dango.shop.entity.Shop;
 import com.example.dango.shop.service.ShopService;
 import io.swagger.annotations.Api;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,8 +27,9 @@ public class ShopController {
     private final ShopService shopService;
 
     @GetMapping("")
-    public ApiResponse<ShopRes> shopGet(@RequestParam Long shopId) {
-        Shop shop = shopService.getShop(shopId);
+    @Operation(summary = "가게 정보 가져오기")
+    public ApiResponse<ShopRes> shopGet(@RequestParam Long shopUid) {
+        Shop shop = shopService.getShop(shopUid);
         List<Long> reviewIds = new ArrayList<>();
         for (Review review : shop.getReviews()) {
             reviewIds.add(review.getId());

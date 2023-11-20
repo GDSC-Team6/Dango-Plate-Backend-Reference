@@ -14,8 +14,8 @@ import java.util.Optional;
 public class ShopService {
     private final ShopRepository shopRepository;
 
-    public Shop getShop(Long shopId) {
-        Optional<Shop> shop = shopRepository.findById(shopId);
+    public Shop getShop(Long shopUid) {
+        Optional<Shop> shop = shopRepository.findByShopUid(shopUid);
         if (shop.isPresent()) {
             return shop.get();
         } else {
