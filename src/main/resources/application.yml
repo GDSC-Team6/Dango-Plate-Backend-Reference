@@ -20,7 +20,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     show-sql: true
     properties:
       hibernate:
@@ -45,7 +45,7 @@ jwt:
   secret: hellothisismydangoplageserverjwtsecretkeyhellothisismydangoplageserverjwtsecretkeyhellothisismydangoplageserverjwtsecretkeyhellothisismydangoplageserverjwtsecretkeyhellothisismydangoplageserverjwtsecretkeyhellothisismydangoplageserverjwtsecretkey
   #token-validity-in-seconds: 86400
   refresh: hellothisismydangoplageserverjwtsecretkeyhellothisismydangoplageserverjwtsecretkeyhellothisismydangoplageserverjwtsecretkeyhellothisismydangoplageserverjwtsecretkeyhellothisismydangoplageserverjwtsecretkeyhellothisismydangoplageserverjwtsecretkey
-  access-token-seconds: 604800
+  access-token-seconds: 604800 * 5
   refresh-token-seconds: 6000
 
 kakao:
