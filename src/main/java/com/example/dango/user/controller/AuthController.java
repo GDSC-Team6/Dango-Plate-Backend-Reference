@@ -36,8 +36,8 @@ public class AuthController {
 //    }
 
     @GetMapping("/kakao/login")
-    public ApiResponse<TokenRes> kakaoLogin(@RequestParam String code) {
-        String accessTokenFromSocial = authService.getKakaoAccessToken(code);
+    public ApiResponse<TokenRes> kakaoLogin(@RequestParam String accessTokenFromSocial) {
+        //String accessTokenFromSocial = authService.getKakaoAccessToken(code);
         TokenRes tokenRes = authService.createAndLoginKakaoUser(accessTokenFromSocial);
         if(tokenRes == null)
             throw new BadRequestException("사용자 정보가 없습니다");
