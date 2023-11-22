@@ -50,6 +50,7 @@ jwt:
 
 kakao:
   client-id: b7efcdeef9cf0be8991e8d2fdc1dc2ba
-  redirect-uri: http://35.216.0.111:8080/oauth/kakao
+  #redirect-uri: http://35.216.0.111:8080/oauth/kakao
+  redirect-uri: dangoplate://oauth
   api-url: https://dapi.kakao.com
   rest-api-key: ${KAKAO_REST_API_KEY}
