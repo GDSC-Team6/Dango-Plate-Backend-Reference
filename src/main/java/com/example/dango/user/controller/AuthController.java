@@ -23,16 +23,26 @@ public class AuthController {
      * https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=b7efcdeef9cf0be8991e8d2fdc1dc2ba&redirect_uri=http://localhost:8080/oauth/kakao
      * https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=b7efcdeef9cf0be8991e8d2fdc1dc2ba&redirect_uri=http://35.216.0.111:8080/oauth/kakao
      * */
-    @ApiOperation(value = "카카오 로그인",
-            notes = "https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=b7efcdeef9cf0be8991e8d2fdc1dc2ba&redirect_uri=http://localhost:8080/oauth/kakao\n" +
-                    "https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=b7efcdeef9cf0be8991e8d2fdc1dc2ba&redirect_uri=dangoplate://oauth\n")
-    @GetMapping("/kakao")
-    public ApiResponse<TokenRes> getAccessTokenKakao(@RequestParam String code) {
+//    @ApiOperation(value = "카카오 로그인",
+//            notes = "https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=b7efcdeef9cf0be8991e8d2fdc1dc2ba&redirect_uri=http://localhost:8080/oauth/kakao\n" +
+//                    "https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=b7efcdeef9cf0be8991e8d2fdc1dc2ba&redirect_uri=dangoplate://oauth\n")
+//    @GetMapping("/kakao")
+//    public ApiResponse<TokenRes> getAccessTokenKakao(@RequestParam String code) {
+//        String accessTokenFromSocial = authService.getKakaoAccessToken(code);
+//        TokenRes tokenRes = authService.createAndLoginKakaoUser(accessTokenFromSocial);
+//        if(tokenRes == null)
+//            throw new BadRequestException("사용자 정보가 없습니다");
+//        return new ApiResponse<>(tokenRes);
+//    }
+
+    @GetMapping("/kakao/login")
+    public ApiResponse<TokenRes> kakaoLogin(@RequestParam String code) {
         String accessTokenFromSocial = authService.getKakaoAccessToken(code);
         TokenRes tokenRes = authService.createAndLoginKakaoUser(accessTokenFromSocial);
         if(tokenRes == null)
             throw new BadRequestException("사용자 정보가 없습니다");
         return new ApiResponse<>(tokenRes);
     }
+
 
 }
