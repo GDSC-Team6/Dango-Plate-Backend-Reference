@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -70,5 +71,50 @@ public class KakaoWebClientService {
         // 결과 확인
         log.info(Objects.requireNonNull(response).toString());
         return response;
+    }
+
+    public Map<?,?> nowLocation(String x, String y) {
+
+        // api 요청
+        String url = kakaoApiUrl + "/v2/local/geo/coord2regioncode.json?";
+        if (x != null && !x.isEmpty()) {
+            url += "x=" + x + "&";
+        }
+        if (y != null && !y.isEmpty()) {
+            url += "y=" + y + "&";
+        }
+
+
+        Map<?, ?> response =
+                webClient
+                        .get()
+                        .uri(url)
+                        .header("Content-type", "application/x-www-form-urlencoded; charset=utf-8")
+                        .header("Authorization", "KakaoAK " + kakaoApiKey)
+                        .retrieve()
+                        .bodyToMono(Map.class)
+                        .block();
+
+
+        Map<String, String> result = new HashMap<>();
+
+        List<?> document = Objects.requireNonNull(response).get("documents") != null ? (List<?>) response.get("documents") : null;
+        if (document != null) {
+            Object o  = document.get(0);
+            Map<String, String> map =  (Map<String, String>) o;
+            String region_1depth_name = map.get("region_1depth_name");
+            String region_2depth_name = map.get("region_2depth_name");
+            String region_3depth_name = map.get("region_3depth_name");
+
+            result.put("depth1", region_1depth_name);
+            result.put("depth2", region_2depth_name);
+            result.put("depth3", region_3depth_name);
+        }
+
+
+        // 결과 확인
+        log.info(Objects.requireNonNull(response).toString());
+        return result;
+
     }
 }

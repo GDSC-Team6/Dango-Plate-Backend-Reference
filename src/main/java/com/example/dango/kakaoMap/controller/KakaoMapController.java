@@ -40,4 +40,17 @@ public class KakaoMapController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "카카오 맵 검색 실패");
         }
     }
+
+
+    @ApiOperation(value = "현위치 검색", notes = "x는 경도, y는 위도")
+    @GetMapping("/now-location")
+    public ApiResponse<Map<?, ?>> nowLocation(@RequestParam String x, @RequestParam String y) {
+        try {
+            Map<?,?> map = kakaoWebClientService.nowLocation(x, y);
+            return new ApiResponse<>(map);
+        } catch (Exception e) {
+            log.error("카카오 맵 검색 실패" + e.getMessage());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "현위치 조회 실패");
+        }
+    }
 }
