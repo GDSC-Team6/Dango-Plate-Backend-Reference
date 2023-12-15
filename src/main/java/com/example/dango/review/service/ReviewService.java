@@ -101,6 +101,7 @@ public class ReviewService {
         return ReviewRes.builder()
                 .id(review.getId())
                 .user_id(review.getUser().getId())
+                .name(review.getUser().getName())
                 .shop_id(review.getShop().getId())
                 .content(review.getReviewContent())
                 .urls(urls)
