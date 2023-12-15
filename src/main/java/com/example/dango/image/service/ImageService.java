@@ -32,58 +32,59 @@ public class ImageService {
     private final ShopImageRepository shopImageRepository;
     private final ReviewRepository reviewRepository;
 
-    public String uploadReviewImage(MultipartFile file, Review review) throws IOException {
-        String fileName = UUID.randomUUID() + file.getOriginalFilename(); // Google Cloud Storage에 저장될 파일 이름
-        String ext = file.getContentType(); // 파일의 형식 ex) JPG
-
-        BlobInfo blobInfo = storage.create(
-                BlobInfo.newBuilder(BUCKET_NAME, fileName)
-                        .setContentType(ext)
-                        .build(),
-                file.getBytes()
-        );
-        String url = blobInfo.getMediaLink();
-        ReviewImage reviewImage = ReviewImage.builder()
-                .review(review)
-                .imageName(fileName)
-                .url(url)
-                .build();
-        reviewImageRepository.save(reviewImage);
-        return url;
-    }
-
-    public List<String> uploadReviewImages(List<MultipartFile> files, Review review) throws IOException {
-        List<String> urls = new ArrayList<>();
-        for (MultipartFile file : files) {
-            urls.add(uploadReviewImage(file, review));
-        }
-        return urls;
-    }
-
-    public void deleteReviewImages(Long reviewId) {
-        Review review = reviewRepository.findById(reviewId).orElseThrow(() ->
-                new ResponseStatusException(HttpStatus.NOT_FOUND, "리뷰를 찾을 수 없습니다."));
-        List<ReviewImage> reviewImage = review.getReviewImages();
-        for (ReviewImage image : reviewImage) {
-            Blob blob = storage.get(BUCKET_NAME, image.getImageName());
-            if (blob == null) {
-                continue;
-            }
-            Storage.BlobSourceOption precondition = Storage.BlobSourceOption.generationMatch(blob.getGeneration());
-            storage.delete(BUCKET_NAME, image.getImageName(), precondition);
-        }
-    }
-
-    public String uploadTest(MultipartFile file) throws IOException {
-        String uuid = UUID.randomUUID().toString(); // Google Cloud Storage에 저장될 파일 이름
-        String ext = file.getContentType(); // 파일의 형식 ex) JPG
-
-        BlobInfo blobInfo = storage.create(
-                BlobInfo.newBuilder(BUCKET_NAME, uuid)
-                        .setContentType(ext)
-                        .build(),
-                file.getBytes()
-        );
-        return blobInfo.getMediaLink();
-    }
+//    public String uploadReviewImage(MultipartFile file, Review review) throws IOException {
+//        String fileName = UUID.randomUUID() + file.getOriginalFilename(); // Google Cloud Storage에 저장될 파일 이름
+//        String ext = file.getContentType(); // 파일의 형식 ex) JPG
+//
+//        BlobInfo blobInfo = storage.create(
+//                BlobInfo.newBuilder(BUCKET_NAME, fileName)
+//                        .setContentType(ext)
+//                        .build(),
+//                file.getBytes()
+//        );
+//        String url = blobInfo.getMediaLink();
+//        ReviewImage reviewImage = ReviewImage.builder()
+//                .review(review)
+//                .imageName(fileName)
+//                .url(url)
+//                .build();
+//        reviewImageRepository.save(reviewImage);
+//        return url;
+//    }
+//
+//    public List<String> uploadReviewImages(List<MultipartFile> files, Review review) throws IOException {
+//        List<String> urls = new ArrayList<>();
+//        for (MultipartFile file : files) {
+//            urls.add(uploadReviewImage(file, review));
+//        }
+//
+//        return urls;
+//    }
+//
+//    public void deleteReviewImages(Long reviewId) {
+//        Review review = reviewRepository.findById(reviewId).orElseThrow(() ->
+//                new ResponseStatusException(HttpStatus.NOT_FOUND, "리뷰를 찾을 수 없습니다."));
+//        List<ReviewImage> reviewImage = review.getReviewImages();
+//        for (ReviewImage image : reviewImage) {
+//            Blob blob = storage.get(BUCKET_NAME, image.getImageName());
+//            if (blob == null) {
+//                continue;
+//            }
+//            Storage.BlobSourceOption precondition = Storage.BlobSourceOption.generationMatch(blob.getGeneration());
+//            storage.delete(BUCKET_NAME, image.getImageName(), precondition);
+//        }
+//    }
+//
+//    public String uploadTest(MultipartFile file) throws IOException {
+//        String uuid = UUID.randomUUID().toString(); // Google Cloud Storage에 저장될 파일 이름
+//        String ext = file.getContentType(); // 파일의 형식 ex) JPG
+//
+//        BlobInfo blobInfo = storage.create(
+//                BlobInfo.newBuilder(BUCKET_NAME, uuid)
+//                        .setContentType(ext)
+//                        .build(),
+//                file.getBytes()
+//        );
+//        return blobInfo.getMediaLink();
+//    }
 }
