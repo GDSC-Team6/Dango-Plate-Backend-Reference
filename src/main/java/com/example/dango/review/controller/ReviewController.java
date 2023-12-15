@@ -39,18 +39,8 @@ public class ReviewController {
 
     @GetMapping("")
     public ApiResponse<ReviewRes> reviewGet(@RequestParam Long reviewId) {
-        Review review = reviewService.getReview(reviewId);
-        List<String> urls = new ArrayList<>();
-        for (ReviewImage reviewImage : review.getReviewImages()) {
-            urls.add(reviewImage.getUrl());
-        }
-        return new ApiResponse<>(ReviewRes.builder()
-                .id(review.getId())
-                .user_id(review.getUser().getId())
-                .shop_id(review.getShop().getId())
-                .content(review.getReviewContent())
-                .urls(urls)
-                .build());
+        ReviewRes result = reviewService.getReview(reviewId);
+        return new ApiResponse<>(result);
     }
 
     @PostMapping(value = "", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
@@ -64,15 +54,8 @@ public class ReviewController {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다.");
         }
         try {
-            Review review = reviewService.postReview(loginUser, reviewReq);
-            List<String> urls = imageService.uploadReviewImages(images, review);
-            return new ApiResponse<>(ReviewRes.builder()
-                    .id(review.getId())
-                    .user_id(review.getUser().getId())
-                    .shop_id(review.getShop().getId())
-                    .content(review.getReviewContent())
-                    .urls(urls)
-                    .build());
+            ReviewRes result = reviewService.postReview(loginUser, reviewReq, images);
+            return new ApiResponse<>(result);
         } catch (Exception e) {
             log.error("리뷰를 작성할 수 없습니다. {}", e);
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "리뷰를 작성할 수 없습니다.");
@@ -88,7 +71,6 @@ public class ReviewController {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "로그인이 필요합니다.");
         }
         try {
-            imageService.deleteReviewImages(reviewId);
             reviewService.deleteReview(loginUser, reviewId);
             return new ApiResponse<>("리뷰 삭제 성공");
         } catch (Exception e) {
@@ -97,10 +79,10 @@ public class ReviewController {
         }
     }
 
-    @PostMapping("test")
-    @ApiOperation(value = "테스트용", notes = "테스트용")
-    public String testPost(@Parameter(description = "multipart/form-data 형식의 이미지 리스트를 input으로 받습니다. 이때 key 값은 multipartFile 입니다.")
-                               @RequestPart("multipartFile") List<MultipartFile> multipartFile) throws IOException {
-        return imageService.uploadTest(multipartFile.get(0));
-    }
+//    @PostMapping("test")
+//    @ApiOperation(value = "테스트용", notes = "테스트용")
+//    public String testPost(@Parameter(description = "multipart/form-data 형식의 이미지 리스트를 input으로 받습니다. 이때 key 값은 multipartFile 입니다.")
+//                               @RequestPart("multipartFile") List<MultipartFile> multipartFile) throws IOException {
+//        return imageService.uploadTest(multipartFile.get(0));
+//    }
 }

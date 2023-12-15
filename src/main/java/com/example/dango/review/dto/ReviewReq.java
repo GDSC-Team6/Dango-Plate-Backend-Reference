@@ -12,4 +12,5 @@ import java.util.List;
 public class ReviewReq {
     private String review_content;
     private Long shop_uid;
+    private double grade;
 }
