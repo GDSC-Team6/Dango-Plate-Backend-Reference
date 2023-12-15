@@ -34,6 +34,20 @@ public class ReviewService {
     private final S3Service s3Service;
 
 
+    public double getGradeAvg(Shop shop){
+        //Shop shop = shopRepository.findById(shopId).get();
+
+        List<Review> reviews = reviewRepository.findReviewByShop(shop);
+
+        double result = 0.0;
+
+        for(Review r : reviews){
+            result += r.getGrade();
+        }
+
+        return result/reviews.size();
+    }
+
     public ReviewRes getReview(Long reviewId) {
         Optional<Review> review = reviewRepository.findById(reviewId);
 
@@ -46,10 +60,12 @@ public class ReviewService {
 
             return ReviewRes.builder()
                     .id(review.get().getId())
-                    .user_id(review.get().getUser().getId())
                     .shop_id(review.get().getShop().getId())
                     .content(review.get().getReviewContent())
                     .urls(urls)
+                    .gradeAvg(getGradeAvg(review.get().getShop()))
+                    .user_id(review.get().getUser().getId())
+                    .name(review.get().getUser().getName())
                     .build();
 
         } else {

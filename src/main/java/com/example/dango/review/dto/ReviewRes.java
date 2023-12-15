@@ -11,9 +11,12 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ReviewRes {
-    Long id;
-    Long user_id;
-    Long shop_id;
-    String content;
-    List<String> urls;
+    private Long id;
+    private Long shop_id;
+    private String content;
+    private List<String> urls;
+    private double gradeAvg;
+
+    private Long user_id;
+    private String name;
 }
