@@ -15,7 +15,7 @@ public class ReviewRes {
     private Long shop_id;
     private String content;
     private List<String> urls;
-    private double gradeAvg;
+    private double grade;
 
     private Long user_id;
     private String name;
