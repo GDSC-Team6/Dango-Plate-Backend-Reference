@@ -35,6 +35,10 @@ jobs:
             echo "DATASOURCE_USERNAME=${{ secrets.DATASOURCE_USERNAME }}" >> .env
             echo "DATASOURCE_PASSWORD=${{ secrets.DATASOURCE_PASSWORD }}" >> .env
             echo "KAKAO_REST_API_KEY=${{ secrets.KAKAO_REST_API_KEY }}" >> .env
+            echo "BUCKET_NAME=${{ secrets.BUCKET_NAME }}" >> .env
+            echo "S3_ACCESSKEY=${{ secrets.S3_ACCESSKEY }}" >> .env
+            echo "S3_SECRETKEY=${{ secrets.S3_SECRETKEY }}" >> .env
+            
 
             docker build -t dango-plate .
             
