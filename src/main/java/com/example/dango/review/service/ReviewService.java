@@ -63,7 +63,7 @@ public class ReviewService {
                     .shop_id(review.get().getShop().getId())
                     .content(review.get().getReviewContent())
                     .urls(urls)
-                    .gradeAvg(getGradeAvg(review.get().getShop()))
+                    .grade(review.get().getGrade())
                     .user_id(review.get().getUser().getId())
                     .name(review.get().getUser().getName())
                     .build();

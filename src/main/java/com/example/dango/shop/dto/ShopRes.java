@@ -10,8 +10,9 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class ShopRes {
-    Long id;
-    Long shopUid;
-    List<String> imageUrls;
-    List<Long> reviewIds;
+    private Long id;
+    private Long shopUid;
+    private List<String> imageUrls;
+    private List<Long> reviewIds;
+    private double gradeAvg;
 }
