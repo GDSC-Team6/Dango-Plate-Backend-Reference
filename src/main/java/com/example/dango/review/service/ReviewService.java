@@ -88,13 +88,20 @@ public class ReviewService {
 
         List<String> urls = new ArrayList<>();
         for (MultipartFile file : images) {
-            urls.add(s3Service.uploadImage("board", Long.toString(review.getId()), file));
+            String url = s3Service.uploadImage("review", Long.toString(review.getId()), file);
+            urls.add(url);
+            reviewImageRepository.save(ReviewImage.builder()
+                            .review(review)
+                            .url(url)
+                            .imageName(file.getName())
+                            .build());
         }
 
 
         return ReviewRes.builder()
                 .id(review.getId())
                 .user_id(review.getUser().getId())
+                .name(review.getUser().getName())
                 .shop_id(review.getShop().getId())
                 .content(review.getReviewContent())
                 .urls(urls)
