@@ -20,7 +20,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     show-sql: true
     properties:
       hibernate:
@@ -45,12 +45,13 @@ jwt:
   secret: hellothisismydangoplageserverjwtsecretkeyhellothisismydangoplageserverjwtsecretkeyhellothisismydangoplageserverjwtsecretkeyhellothisismydangoplageserverjwtsecretkeyhellothisismydangoplageserverjwtsecretkeyhellothisismydangoplageserverjwtsecretkey
   #token-validity-in-seconds: 86400
   refresh: hellothisismydangoplageserverjwtsecretkeyhellothisismydangoplageserverjwtsecretkeyhellothisismydangoplageserverjwtsecretkeyhellothisismydangoplageserverjwtsecretkeyhellothisismydangoplageserverjwtsecretkeyhellothisismydangoplageserverjwtsecretkey
-  access-token-seconds: 604800
+  access-token-seconds: 3024000
   refresh-token-seconds: 6000
 
 kakao:
   client-id: b7efcdeef9cf0be8991e8d2fdc1dc2ba
   redirect-uri: http://35.216.0.111:8080/oauth/kakao
+  #redirect-uri: dangoplate://oauth
   api-url: https://dapi.kakao.com
   rest-api-key: ${KAKAO_REST_API_KEY}
 
