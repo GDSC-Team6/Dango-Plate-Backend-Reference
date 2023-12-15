@@ -104,6 +104,7 @@ public class ReviewService {
                 .name(review.getUser().getName())
                 .shop_id(review.getShop().getId())
                 .content(review.getReviewContent())
+                .grade(review.getGrade())
                 .urls(urls)
                 .build();
     }
