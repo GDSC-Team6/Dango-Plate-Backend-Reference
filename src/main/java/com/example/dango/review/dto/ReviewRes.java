@@ -19,4 +19,5 @@ public class ReviewRes {
 
     private Long user_id;
     private String name;
+    private String profileUrl;
 }
