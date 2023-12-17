@@ -66,6 +66,7 @@ public class ReviewService {
                     .grade(review.get().getGrade())
                     .user_id(review.get().getUser().getId())
                     .name(review.get().getUser().getName())
+                    .profileUrl(review.get().getUser().getImageUrl())
                     .build();
 
         } else {
@@ -102,6 +103,7 @@ public class ReviewService {
                 .id(review.getId())
                 .user_id(review.getUser().getId())
                 .name(review.getUser().getName())
+                .profileUrl(review.getUser().getImageUrl())
                 .shop_id(review.getShop().getId())
                 .content(review.getReviewContent())
                 .grade(review.getGrade())
