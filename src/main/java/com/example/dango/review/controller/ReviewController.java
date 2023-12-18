@@ -45,7 +45,8 @@ public class ReviewController {
 
     @PostMapping(value = "", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ApiResponse<ReviewRes> reviewPost(
-            @RequestPart(name = "review") ReviewReq reviewReq,
+            //@RequestPart(name = "review") ReviewReq reviewReq,
+            @RequestBody ReviewReq reviewReq,
             @RequestPart(value = "images") List<MultipartFile> images) {
         User loginUser;
         try {
